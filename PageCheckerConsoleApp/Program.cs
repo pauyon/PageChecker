@@ -6,15 +6,24 @@ AnsiConsole.Write(
         .Centered()
         .Color(Color.Green));
 
-XmlReaderUtility.MarketExcelPath = AnsiConsole.Ask<string>("File path of [green]market spreadsheet[/]:");
-XmlReaderUtility.SalesExcelPath = AnsiConsole.Ask<string>("File path of [green]sales run[/] to compare against:");
+var rootPath = AnsiConsole.Ask<string>("Folder path that has [green]market spreadsheet[/] and [green]sales run[/]:");
+XmlReaderUtility.SetDirectoryPath(rootPath);
 
-Console.WriteLine("Loading files...");
+var files = XmlReaderUtility.GetDirectoryFiles();
 
-XmlReaderUtility.SetDefaultFilePaths();
-XmlReaderUtility.OpenExcelFiles();
+var salesSheet = AnsiConsole.Prompt(
+    new SelectionPrompt<string>()
+        .Title("Which file is the [green]sales run[/]?")
+        .PageSize(10)
+        .MoreChoicesText("[grey](Move up and down to reveal more files)[/]")
+        .AddChoices(files));
 
-var exportPath = "report.xlsx";
-XmlReaderUtility.ExportResults(exportPath);
+files.Remove(salesSheet);
+var marketSheet = files[0];
+
+XmlReaderUtility.OpenSalesSheet(salesSheet);
+XmlReaderUtility.OpenMarketSheet(marketSheet);
+
+XmlReaderUtility.ExportResults();
 
 Console.WriteLine("All done!");

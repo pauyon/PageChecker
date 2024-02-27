@@ -1,22 +1,16 @@
 ﻿using ClosedXML.Excel;
 using PageChecker.Domain.Models;
+using System.Runtime;
 using System.Text.RegularExpressions;
 
 namespace PageChecker.Library;
 
 public static class XmlReaderUtility
 {
-    public static string MarketExcelPath { set; get; } = string.Empty;
-    public static string SalesExcelPath { set; get; } = string.Empty;
-
+    public static DirectoryInfo RootDirectory { get; private set; }
     public static XLWorkbook MarketWorkbook { get; internal set; } = new XLWorkbook();
     public static XLWorkbook SalesWorkbook { get; internal set; } = new XLWorkbook();
 
-    public static void OpenExcelFiles()
-    {
-        MarketWorkbook = new XLWorkbook(MarketExcelPath);
-        SalesWorkbook = new XLWorkbook(SalesExcelPath);
-    }
 
     public static IXLWorksheet GetMarketWorksheet(int index)
     {
@@ -38,19 +32,6 @@ public static class XmlReaderUtility
         return SalesWorkbook.Worksheets.Worksheet(index);
     }
 
-    public static void SetDefaultFilePaths()
-    {
-        if (MarketExcelPath == ".")
-        {
-            MarketExcelPath = $"C:\\Users\\pauli\\Desktop\\Test Market Sheet.xlsx";
-        }
-
-        if (SalesExcelPath == ".")
-        {
-            SalesExcelPath = $"C:\\Users\\pauli\\Desktop\\Test Sales Sheet.xlsx";
-        }
-    }
-
     public static List<Market> GetMarketWorksheetData()
     {
         var marketData = new List<Market>();
@@ -69,10 +50,12 @@ public static class XmlReaderUtility
             var customer = row.Cell(1).Value.ToString();
             var size = row.Cell(2).Value.ToString();
             var rep = row.Cell(3).Value.ToString();
-            var contractStatus = row.Cell(4).Value.ToString();
-            var notes = row.Cell(5).Value.ToString();
-            var placement = row.Cell(6).Value.ToString();
-            var accountingNotes = row.Cell(7).Value.ToString();
+            var categories = row.Cell(4).Value.ToString();
+            var contractStatus = row.Cell(5).Value.ToString();
+            var artwork = row.Cell(6).Value.ToString();
+            var notes = row.Cell(7).Value.ToString();
+            var placement = row.Cell(8).Value.ToString();
+            var accountingNotes = row.Cell(9).Value.ToString();
 
 
             marketData.Add(new Market
@@ -80,7 +63,9 @@ public static class XmlReaderUtility
                 Customer = customer,
                 Size = Convert.ToDouble(size),
                 Rep = rep,
+                Categories = categories,
                 ContractStatus = contractStatus,
+                Artwork = artwork,
                 Notes = notes,
                 Placement = placement,
                 AccountingNotes = accountingNotes,
@@ -165,34 +150,41 @@ public static class XmlReaderUtility
         return 0;
     }
 
-    public static void ExportResults(string exportPath)
+    public static void ExportResults()
     {
+        var resultsFilePath = Path.Combine(RootDirectory.FullName, "Results.xlsx");
+        
+        if (File.Exists(resultsFilePath))
+        {
+            File.Delete(resultsFilePath);
+        }
+
         var marketSheetData = GetMarketWorksheetData();
         var salesSheetData = GetSalesWorksheetData();
 
-        var passedMarketData = CompareSheets(marketSheetData, salesSheetData);
+        var checkedMarketData = CompareSheets(marketSheetData, salesSheetData);
 
         var workbook = new XLWorkbook();
         var ws = workbook.Worksheets.Add("Report");
 
-        ws.Range(1, 1, 1, 10).Style.Fill.SetBackgroundColor(XLColor.Blush);
+        ws.Range(1, 1, 1, 10).Style.Fill.SetBackgroundColor(XLColor.LightBlue);
 
-        ws.Cell(1, 1).Value = "PassedCheck";
-        ws.Cell(1, 2).Value = "Customer";
-        ws.Cell(1, 3).Value = "Size";
-        ws.Cell(1, 4).Value = "Rep";
-        ws.Cell(1, 5).Value = "Categories";
-        ws.Cell(1, 6).Value = "Contract Status";
-        ws.Cell(1, 7).Value = "Artwork";
-        ws.Cell(1, 8).Value = "Notes";
-        ws.Cell(1, 9).Value = "Placement";
-        ws.Cell(1, 10).Value = "Accounting Notes";
+        var rowNum = 1;
 
-        var rowNum = 2;
+        ws.Cell(rowNum, 1).Value = "PassedCheck";
+        ws.Cell(rowNum, 2).Value = "Customer";
+        ws.Cell(rowNum, 3).Value = "Size";
+        ws.Cell(rowNum, 4).Value = "Rep";
+        ws.Cell(rowNum, 5).Value = "Categories";
+        ws.Cell(rowNum, 6).Value = "Contract Status";
+        ws.Cell(rowNum, 7).Value = "Artwork";
+        ws.Cell(rowNum, 8).Value = "Notes";
+        ws.Cell(rowNum, 9).Value = "Placement";
+        ws.Cell(rowNum, 10).Value = "Accounting Notes";
 
-        foreach (var item in passedMarketData)
+        foreach (var item in checkedMarketData)
         {
-            ws.Range(rowNum, 1, 1, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            rowNum++;
 
             ws.Cell(rowNum, 1).Value = item.PassedCheck ? "X" : "";
             ws.Cell(rowNum, 2).Value = item.Customer;
@@ -205,11 +197,44 @@ public static class XmlReaderUtility
             ws.Cell(rowNum, 9).Value = item.Placement;
             ws.Cell(rowNum, 10).Value = item.AccountingNotes;
 
-            rowNum++;
+            ws.Range(rowNum, 1, 1, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+            if (!item.PassedCheck) 
+            {
+                ws.Range(rowNum, 1, rowNum, 10).Style.Fill.SetBackgroundColor(XLColor.LightGray);
+            }
         }
 
         ws.Columns().AdjustToContents();
 
-        workbook.SaveAs(exportPath);
+        workbook.SaveAs(resultsFilePath);
+    }
+
+    public static void SetDirectoryPath(string directoryPath)
+    {
+        RootDirectory = new DirectoryInfo(directoryPath);
+    }
+
+    public static List<string> GetDirectoryFiles()
+    {
+        var files = RootDirectory.GetFiles().Select(x => x.Name).ToList();
+
+        files.Remove("Results.xlsx");
+
+        return files;
+    }
+
+    public static void OpenSalesSheet(string filename)
+    {
+        var filepath = Path.Combine(RootDirectory.FullName, filename);
+
+        SalesWorkbook = new XLWorkbook(filepath);
+    }
+
+    public static void OpenMarketSheet(string filename)
+    {
+        var filepath = Path.Combine(RootDirectory.FullName, filename);
+
+        MarketWorkbook = new XLWorkbook(filepath);
     }
 }
