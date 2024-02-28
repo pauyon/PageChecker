@@ -99,8 +99,8 @@ public static class XmlReaderUtility
                 Product = product,
                 Description = description,
                 SalesRep = salesRep,
-                Net = Convert.ToDecimal(net),
-                Barter  = Convert.ToInt32(barter),
+                Net = net,
+                Barter  = barter,
             });
         }
 
@@ -177,10 +177,10 @@ public static class XmlReaderUtility
         ws.Cell(rowNum, 4).Value = "Rep";
         ws.Cell(rowNum, 5).Value = "Categories";
         ws.Cell(rowNum, 6).Value = "Contract Status";
-        ws.Cell(rowNum, 7).Value = "Artwork";
+        /*ws.Cell(rowNum, 7).Value = "Artwork";
         ws.Cell(rowNum, 8).Value = "Notes";
         ws.Cell(rowNum, 9).Value = "Placement";
-        ws.Cell(rowNum, 10).Value = "Accounting Notes";
+        ws.Cell(rowNum, 10).Value = "Accounting Notes";*/
 
         foreach (var item in checkedMarketData)
         {
@@ -192,16 +192,21 @@ public static class XmlReaderUtility
             ws.Cell(rowNum, 4).Value = item.Rep;
             ws.Cell(rowNum, 5).Value = item.Categories;
             ws.Cell(rowNum, 6).Value = item.ContractStatus;
-            ws.Cell(rowNum, 7).Value = item.Artwork;
+            /*ws.Cell(rowNum, 7).Value = item.Artwork;
             ws.Cell(rowNum, 8).Value = item.Notes;
             ws.Cell(rowNum, 9).Value = item.Placement;
-            ws.Cell(rowNum, 10).Value = item.AccountingNotes;
+            ws.Cell(rowNum, 10).Value = item.AccountingNotes;*/
 
             ws.Range(rowNum, 1, 1, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
             if (!item.PassedCheck) 
             {
-                ws.Range(rowNum, 1, rowNum, 10).Style.Fill.SetBackgroundColor(XLColor.LightGray);
+                ws.Range(rowNum, 1, rowNum, 10).Style.Fill.SetBackgroundColor(XLColor.Yellow);
+            }
+
+            if (item.ContractStatus.ToLower() == "pay per lead")
+            {
+                ws.Range(rowNum, 1, rowNum, 10).Style.Fill.SetBackgroundColor(XLColor.LightPastelPurple);
             }
         }
 
@@ -217,7 +222,7 @@ public static class XmlReaderUtility
 
     public static List<string> GetDirectoryFiles()
     {
-        var files = RootDirectory.GetFiles().Select(x => x.Name).ToList();
+        var files = RootDirectory.GetFiles("*.xlsx").Select(x => x.Name).ToList();
 
         files.Remove("Results.xlsx");
 

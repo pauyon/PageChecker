@@ -5,6 +5,6 @@ public class SalesRun
     public string Product { get; set; }
     public string Description { get; set; }
     public string SalesRep { get; set; }
-    public decimal Net { get; set; }
-    public int Barter { get; set; }
+    public string Net { get; set; }
+    public string Barter { get; set; }
 }
