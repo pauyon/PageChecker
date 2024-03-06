@@ -1,5 +1,5 @@
 ﻿using PageChecker.Library;
-using PageCheckerConsoleApp;
+using PageChecker.ConsoleApp;
 using Spectre.Console;
 
 AnsiConsole.Write(

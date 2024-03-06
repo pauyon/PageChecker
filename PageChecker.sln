@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34309.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PageCheckerConsoleApp", "PageCheckerConsoleApp\PageCheckerConsoleApp.csproj", "{132B4EEA-B4B6-4FE3-B331-4F4604A7D13F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PageChecker.ConsoleApp", "PageCheckerConsoleApp\PageChecker.ConsoleApp.csproj", "{132B4EEA-B4B6-4FE3-B331-4F4604A7D13F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PageChecker.Domain", "PageChecker.Domain\PageChecker.Domain.csproj", "{288428D2-727D-44E6-8E20-E2A3C6247963}"
 EndProject

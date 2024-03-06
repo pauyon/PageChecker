@@ -1,7 +1,7 @@
 ﻿using PageChecker.Library;
 using Spectre.Console;
 
-namespace PageCheckerConsoleApp;
+namespace PageChecker.ConsoleApp;
 
 public static class Utility
 {
