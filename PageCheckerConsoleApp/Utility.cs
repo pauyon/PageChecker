@@ -7,22 +7,24 @@ public static class Utility
 {
     public static void ShowInstructions()
     {
-        AnsiConsole.WriteLine("");
+        AnsiConsole.WriteLine();
         AnsiConsole.MarkupLine("Before starting, ensure the following:");
-        AnsiConsole.MarkupLine("===================================");
-        AnsiConsole.MarkupLine("1. Create a [green]workspace folder[/] that will contain [green]client folders[/] to be analyzed.");
-        AnsiConsole.MarkupLine("2. Inside each [green]client folder[/] include the [green]market spreadsheet[/] and [green]sales run[/].");
-        AnsiConsole.MarkupLine("3. Ensure the spreadsheets are in excel ([green].xlsx[/]) format.");
-        AnsiConsole.MarkupLine("4. Ensure the sales spreadsheets contains the keywords [green]'sales sheet'[/] or [green]'salessheet'[/].");
+        AnsiConsole.MarkupLine("======================================");
+        AnsiConsole.WriteLine();
+        AnsiConsole.MarkupLine("1. Create a [green]workspace[/] folder. This will contain all [green]client[/] folders for analysis.");
+        AnsiConsole.MarkupLine("2. Within each [green]client[/] folder include the [green]market spreadsheet[/] and [green]sales run spreadsheet[/] files.");
+        AnsiConsole.MarkupLine("3. Ensure the spreadsheets in each folder are in excel format ([green].xlsx[/]).");
+        AnsiConsole.MarkupLine("4. Ensure the sales spreadsheets contains the keywords [green]'sales sheet'[/] OR [green]'salessheet'[/].");
+        AnsiConsole.MarkupLine("5. Ensure there is only [green]1 market/client spreadsheet[/] and [green]1 sales run spreadsheet[/] per folder.");
         AnsiConsole.WriteLine("");
     }
 
     public static bool AreFilesReady()
     {
-        if (!AnsiConsole.Confirm("Have you prepped the folders and files?"))
+        if (!AnsiConsole.Confirm("Have you completed everything on the checklist?"))
         {
-            AnsiConsole.MarkupLine("");
-            AnsiConsole.MarkupLine("The app will now close, run again once the files are setup.");
+            AnsiConsole.WriteLine();
+            AnsiConsole.MarkupLine("The application will now close. Run again once the files are setup.");
             return false;
         }
 
@@ -33,9 +35,9 @@ public static class Utility
     {
         string rootPath = "./";
 
-        if (!AnsiConsole.Confirm("Is the workspace folder in the same folder as the app?"))
+        if (!AnsiConsole.Confirm("Is the workspace folder located in the same place as the app?"))
         {
-            rootPath = AnsiConsole.Ask<string>("Path of workspace folder :");
+            rootPath = AnsiConsole.Ask<string>("Path of workspace folder:");
         }
 
         return rootPath;
@@ -66,11 +68,13 @@ public static class Utility
 
     public static List<string> GetFoldersToAnalyze()
     {
-        if (!AnsiConsole.Confirm("Would you like to run the analyzer on all folders in the workspace?"))
+        List<string> foldersToAnalyze = XmlReaderUtility.GetRootDirectoryFolders();
+
+        if (!AnsiConsole.Confirm($"[green]{foldersToAnalyze.Count}[/] folders were found in workspace. Run analyzer on all files?"))
         {
-            List<string> folders = AnsiConsole.Prompt(
+            foldersToAnalyze = AnsiConsole.Prompt(
             new MultiSelectionPrompt<string>()
-                .Title("Which folders would you like to run the analyzer on?")
+                .Title($"{Environment.NewLine}Which folders would you like to run the analyzer on?")
                 .Required()
                 .PageSize(10)
                 .MoreChoicesText("[grey](Move up and down to reveal more folders)[/]")
@@ -78,10 +82,9 @@ public static class Utility
                     "[grey](Press [blue]<space>[/] to toggle a folder, " +
                     "[green]<enter>[/] to accept)[/]")
                 .AddChoices(XmlReaderUtility.GetRootDirectoryFolders()));
-            return folders;
         }
 
-        return XmlReaderUtility.GetRootDirectoryFolders();
+        return foldersToAnalyze;
     }
 
     public static List<string> GetFolderFiles(string path)
@@ -121,5 +124,12 @@ public static class Utility
             XmlReaderUtility.ExportResults(folderPath);
             AnsiConsole.MarkupLine($"Folder [green]{folder}[/] analyzed successfully.");
         }
+    }
+
+    public static void WriteSpacedLine(string text)
+    {
+        AnsiConsole.WriteLine();
+        AnsiConsole.MarkupLine(text);
+        AnsiConsole.WriteLine();
     }
 }
