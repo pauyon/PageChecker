@@ -1,4 +1,5 @@
 ﻿using PageChecker.Library;
+using PageCheckerConsoleApp;
 using Spectre.Console;
 
 AnsiConsole.Write(
@@ -6,24 +7,38 @@ AnsiConsole.Write(
         .Centered()
         .Color(Color.Green));
 
-var rootPath = AnsiConsole.Ask<string>("Folder path that has [green]market spreadsheet[/] and [green]sales run[/]:");
-XmlReaderUtility.SetDirectoryPath(rootPath);
+Utility.ShowInstructions();
 
-var files = XmlReaderUtility.GetDirectoryFiles();
+if (!Utility.AreFilesReady())
+{
+    return;
+}
 
-var salesSheet = AnsiConsole.Prompt(
-    new SelectionPrompt<string>()
-        .Title("Which file is the [green]sales run[/]?")
-        .PageSize(10)
-        .MoreChoicesText("[grey](Move up and down to reveal more files)[/]")
-        .AddChoices(files));
+XmlReaderUtility.SetRootDirectoryPath(Utility.GetWorkspaceFolderPath().EscapeMarkup());
 
-files.Remove(salesSheet);
-var marketSheet = files[0];
+AnsiConsole.WriteLine();
+AnsiConsole.MarkupLine($"Workspace path set to: {XmlReaderUtility.RootDirectory.FullName}");
+AnsiConsole.WriteLine();
 
-XmlReaderUtility.OpenSalesSheet(salesSheet);
-XmlReaderUtility.OpenMarketSheet(marketSheet);
+var foldersToAnalyze = Utility.GetFoldersToAnalyze();
 
-XmlReaderUtility.ExportResults();
+if (foldersToAnalyze.Count == 0)
+{
+    AnsiConsole.WriteLine();
+    AnsiConsole.MarkupLine($"There were no folders in workspace. App closing.");
+    AnsiConsole.WriteLine();
 
-Console.WriteLine("All done!");
+    return;
+}
+
+AnsiConsole.Status()
+    .Spinner(Spinner.Known.Star)
+    .SpinnerStyle(Style.Parse("green bold"))
+    .Start("Analyzing files...", ctx =>
+    {
+        Utility.AnalyzeFolders(foldersToAnalyze);
+        
+        Console.WriteLine("Analysis complete!");
+    });
+
+

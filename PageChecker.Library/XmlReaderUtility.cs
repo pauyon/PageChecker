@@ -1,6 +1,5 @@
 ﻿using ClosedXML.Excel;
 using PageChecker.Domain.Models;
-using System.Runtime;
 using System.Text.RegularExpressions;
 
 namespace PageChecker.Library;
@@ -150,9 +149,9 @@ public static class XmlReaderUtility
         return 0;
     }
 
-    public static void ExportResults()
+    public static void ExportResults(string folderPath)
     {
-        var resultsFilePath = Path.Combine(RootDirectory.FullName, "Results.xlsx");
+        var resultsFilePath = Path.Combine(folderPath, "Results.xlsx");
         
         if (File.Exists(resultsFilePath))
         {
@@ -215,18 +214,15 @@ public static class XmlReaderUtility
         workbook.SaveAs(resultsFilePath);
     }
 
-    public static void SetDirectoryPath(string directoryPath)
+    public static void SetRootDirectoryPath(string directoryPath)
     {
         RootDirectory = new DirectoryInfo(directoryPath);
     }
 
-    public static List<string> GetDirectoryFiles()
+    public static List<string> GetRootDirectoryFolders()
     {
-        var files = RootDirectory.GetFiles("*.xlsx").Select(x => x.Name).ToList();
-
-        files.Remove("Results.xlsx");
-
-        return files;
+        var folders = RootDirectory.GetDirectories().Select(x => x.Name).ToList();
+        return folders;
     }
 
     public static void OpenSalesSheet(string filename)
