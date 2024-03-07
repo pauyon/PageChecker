@@ -2,11 +2,8 @@
 using PageChecker.ConsoleApp;
 using Spectre.Console;
 
-AnsiConsole.Write(
-    new FigletText("Page Checker")
-        .Centered()
-        .Color(Color.Green));
 
+Utility.ShowAppTitle("Page Checker");
 Utility.ShowInstructions();
 
 if (!Utility.AreFilesReady())
