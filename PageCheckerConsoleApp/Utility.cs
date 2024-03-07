@@ -1,6 +1,5 @@
 ﻿using PageChecker.Library;
 using Spectre.Console;
-using System.Linq.Expressions;
 
 namespace PageChecker.ConsoleApp;
 
@@ -20,7 +19,7 @@ public static class Utility
         AnsiConsole.WriteLine("");
     }
 
-    public static bool AreFilesReady()
+    public static bool FilesReadyPrompt()
     {
         if (!AnsiConsole.Confirm("Have you completed everything on the checklist?"))
         {
@@ -52,7 +51,7 @@ public static class Utility
         return folders;
     }
 
-    public static string GetWorkspaceFolderPath()
+    public static string GetWorkspaceFolderPathPrompt()
     {
         var rootPath = GetWorkspaceRootPath();
         var folders = GetWorkspaceRootPathFolders(rootPath);
@@ -72,7 +71,7 @@ public static class Utility
         return Path.Combine(rootPath, folderName);
     }
 
-    public static List<string> GetFoldersToAnalyze()
+    public static List<string> GetFoldersToAnalyzePrompt()
     {
         List<string> foldersToAnalyze = XmlReaderUtility.GetRootDirectoryFolders();
 
@@ -102,7 +101,7 @@ public static class Utility
         return files;
     }
 
-    public static void AnalyzeFolders(List<string> folders)
+    public static void ProcessFolders(List<string> folders)
     {
         foreach (string folder in folders)
         {
@@ -128,7 +127,7 @@ public static class Utility
             XmlReaderUtility.OpenMarketSheet(Path.Combine(folderPath, marketSheet));
 
             XmlReaderUtility.ExportResults(folderPath);
-            AnsiConsole.MarkupLine($"Marekt folder [green]{folder}[/] analyzed successfully.");
+            AnsiConsole.MarkupLine($"Folder [green]{folder}[/] processed successfully.");
         }
     }
 

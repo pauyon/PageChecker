@@ -6,12 +6,12 @@ using Spectre.Console;
 Utility.ShowAppTitle("Page Checker");
 Utility.ShowInstructions();
 
-if (!Utility.AreFilesReady())
+if (!Utility.FilesReadyPrompt())
 {
     return;
 }
 
-var workspacePath = Utility.GetWorkspaceFolderPath();
+var workspacePath = Utility.GetWorkspaceFolderPathPrompt();
 
 if (string.IsNullOrEmpty(workspacePath))
 {
@@ -29,7 +29,7 @@ if (XmlReaderUtility.GetRootDirectoryFolders().Count() == 0)
 
 Utility.WriteSpacedLine($"Workspace path: {XmlReaderUtility.RootDirectory.FullName}");
 
-var foldersToAnalyze = Utility.GetFoldersToAnalyze();
+var foldersToAnalyze = Utility.GetFoldersToAnalyzePrompt();
 
 if (foldersToAnalyze.Count == 0)
 {
@@ -40,10 +40,10 @@ if (foldersToAnalyze.Count == 0)
 AnsiConsole.Status()
     .Spinner(Spinner.Known.Star)
     .SpinnerStyle(Style.Parse("green bold"))
-    .Start("Analyzing files...", ctx =>
+    .Start("Processing folders...", ctx =>
     {
         AnsiConsole.WriteLine();
-        Utility.AnalyzeFolders(foldersToAnalyze);
+        Utility.ProcessFolders(foldersToAnalyze);
         Utility.WriteSpacedLine("Analysis Complete!");
     });
 
