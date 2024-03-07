@@ -1,5 +1,6 @@
 ﻿using PageChecker.Library;
 using Spectre.Console;
+using System.Linq.Expressions;
 
 namespace PageChecker.ConsoleApp;
 
@@ -11,11 +12,11 @@ public static class Utility
         AnsiConsole.MarkupLine("Before starting, ensure the following:");
         AnsiConsole.MarkupLine("======================================");
         AnsiConsole.WriteLine();
-        AnsiConsole.MarkupLine("1. Create a [green]workspace[/] folder. This will contain all [green]client[/] folders for analysis.");
-        AnsiConsole.MarkupLine("2. Within each [green]client[/] folder include the [green]market spreadsheet[/] and [green]sales run spreadsheet[/] files.");
+        AnsiConsole.MarkupLine("1. Create a [green]workspace[/] folder. This will contain all [green]market[/] folders for analysis.");
+        AnsiConsole.MarkupLine("2. Within each [green]market[/] folder include the [green]market spreadsheet[/] and [green]sales run spreadsheet[/] files.");
         AnsiConsole.MarkupLine("3. Ensure the spreadsheets in each folder are in excel format ([green].xlsx[/]).");
         AnsiConsole.MarkupLine("4. Ensure the sales spreadsheets contains the keywords [green]'sales sheet'[/] OR [green]'salessheet'[/].");
-        AnsiConsole.MarkupLine("5. Ensure there is only [green]1 market/client spreadsheet[/] and [green]1 sales run spreadsheet[/] per folder.");
+        AnsiConsole.MarkupLine("5. Ensure there is only [green]1 market spreadsheet[/] and [green]1 sales run spreadsheet[/] per folder.");
         AnsiConsole.WriteLine("");
     }
 
@@ -56,6 +57,11 @@ public static class Utility
         var rootPath = GetWorkspaceRootPath();
         var folders = GetWorkspaceRootPathFolders(rootPath);
 
+        if (folders == null || folders.Count() == 0)
+        {
+            return string.Empty;
+        }
+
         var folderName = AnsiConsole.Prompt(
         new SelectionPrompt<string>()
             .Title("Which folder is the [green]workspace[/] folder?")
@@ -70,7 +76,7 @@ public static class Utility
     {
         List<string> foldersToAnalyze = XmlReaderUtility.GetRootDirectoryFolders();
 
-        if (!AnsiConsole.Confirm($"[green]{foldersToAnalyze.Count}[/] folders were found in workspace. Run analyzer on all files?"))
+        if (!AnsiConsole.Confirm($"[green]{foldersToAnalyze.Count}[/] folders were found in workspace. Run analyzer on all folders?"))
         {
             foldersToAnalyze = AnsiConsole.Prompt(
             new MultiSelectionPrompt<string>()
@@ -122,7 +128,7 @@ public static class Utility
             XmlReaderUtility.OpenMarketSheet(Path.Combine(folderPath, marketSheet));
 
             XmlReaderUtility.ExportResults(folderPath);
-            AnsiConsole.MarkupLine($"Folder [green]{folder}[/] analyzed successfully.");
+            AnsiConsole.MarkupLine($"Marekt folder [green]{folder}[/] analyzed successfully.");
         }
     }
 

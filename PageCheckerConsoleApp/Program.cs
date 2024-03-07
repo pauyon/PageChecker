@@ -14,7 +14,15 @@ if (!Utility.AreFilesReady())
     return;
 }
 
-XmlReaderUtility.SetRootDirectoryPath(Utility.GetWorkspaceFolderPath().EscapeMarkup());
+var workspacePath = Utility.GetWorkspaceFolderPath();
+
+if (string.IsNullOrEmpty(workspacePath))
+{
+    Utility.WriteSpacedLine($"There were no folders in workspace. Closing application.");
+    return;
+}
+
+XmlReaderUtility.SetRootDirectoryPath(workspacePath);
 
 if (XmlReaderUtility.GetRootDirectoryFolders().Count() == 0)
 {
