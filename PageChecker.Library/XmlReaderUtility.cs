@@ -85,7 +85,7 @@ public static class XmlReaderUtility
 
         var worksheet = GetSalesWorksheet(1);
         
-        SalesHeaders = GetWorksheetHeaders(worksheet, skip: 0, take: 1);
+        SalesHeaders = GetWorksheetHeaders(worksheet, skip: 1, take: 1);
 
         var rows = worksheet.RangeUsed().RowsUsed().Skip(1); // Skip header row
 
@@ -238,7 +238,7 @@ public static class XmlReaderUtility
 
     public static List<string> GetRootDirectoryFolders()
     {
-        var folders = RootDirectory.GetDirectories().Select(x => x.Name).ToList();
+        var folders = RootDirectory.GetDirectories().Where(f => !f.Attributes.HasFlag(FileAttributes.Hidden)).Select(x => x.Name).ToList();
         return folders;
     }
 

@@ -96,7 +96,7 @@ public static class Utility
     {
         var directory = new DirectoryInfo(path);
 
-        var files = directory.GetFiles().Where(x => !x.Name.ToLower().Contains("results")).Select(x => x.Name).ToList();
+        var files = directory.GetFiles().Where(x => x.Extension == ".xlsx" && !x.Name.ToLower().Contains("results")).Select(x => x.Name).ToList();
 
         return files;
     }
@@ -111,6 +111,12 @@ public static class Utility
             if (files == null || files.Count == 0)
             {
                 AnsiConsole.MarkupLine($"Folder [green]{folder}[/] skipped. No spreadsheets found.");
+                continue;
+            }
+
+            if (files.Count == 1)
+            {
+                AnsiConsole.MarkupLine($"Folder [green]{folder}[/] skipped. It is missing either a client sheet or a sales sheet.");
                 continue;
             }
 

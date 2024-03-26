@@ -21,7 +21,7 @@ if (string.IsNullOrEmpty(workspacePath))
 
 XmlReaderUtility.SetRootDirectoryPath(workspacePath);
 
-if (XmlReaderUtility.GetRootDirectoryFolders().Count() == 0)
+if (XmlReaderUtility.GetRootDirectoryFolders().Count == 0)
 {
     Utility.WriteSpacedLine($"There were no folders in workspace. Closing application.");
     return;
