@@ -3,7 +3,7 @@ using Spectre.Console;
 
 namespace PageChecker.ConsoleApp;
 
-public static class Utility
+public static class ConsoleUtility
 {
     public static void ShowInstructions()
     {
@@ -96,7 +96,7 @@ public static class Utility
         return files;
     }
 
-    public static void AnalyzeFolders(XmlReaderUtility xmlReaderUtility, List<string> folders)
+    public static void AnalyzeAndExportResults(XmlReaderUtility xmlReaderUtility, List<string> folders)
     {
         foreach (string folder in folders)
         {
@@ -115,13 +115,10 @@ public static class Utility
                 continue;
             }
 
-            var salesSheet = files.First(x => x.ToLower().Contains("salessheet") || x.ToLower().Contains("sales sheet"));
-            var marketSheet = files.First(x => !x.ToLower().Contains("salessheet") || !x.ToLower().Contains("sales sheet"));
+            var salesSheetFilename = files.First(x => x.ToLower().Contains("salessheet") || x.ToLower().Contains("sales sheet"));
+            var marketSheetFilename = files.First(x => !x.ToLower().Contains("salessheet") || !x.ToLower().Contains("sales sheet"));
 
-            xmlReaderUtility.OpenSalesSheet(Path.Combine(folderPath, salesSheet));
-            xmlReaderUtility.OpenMarketSheet(Path.Combine(folderPath, marketSheet));
-
-            xmlReaderUtility.ExportResults(folderPath);
+            xmlReaderUtility.ExportResults(folderPath, marketSheetFilename, salesSheetFilename);
             AnsiConsole.MarkupLine($"Folder [green]{folder}[/] analyzed successfully.");
         }
     }

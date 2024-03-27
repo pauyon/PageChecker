@@ -7,30 +7,30 @@ AnsiConsole.Write(
         .Centered()
         .Color(Color.Green));
 
-Utility.ShowInstructions();
+ConsoleUtility.ShowInstructions();
 
-if (!Utility.AreFilesReady())
+if (!ConsoleUtility.AreFilesReady())
 {
     return;
 }
 
 var xmlReaderUtility = new XmlReaderUtility();
 
-xmlReaderUtility.SetRootDirectoryPath(Utility.GetWorkspaceFolderPath().EscapeMarkup());
+xmlReaderUtility.SetRootDirectoryPath(ConsoleUtility.GetWorkspaceFolderPath().EscapeMarkup());
 
-if (xmlReaderUtility.GetRootDirectoryFolders().Count() == 0)
+if (!xmlReaderUtility.GetRootDirectoryFolders().Any())
 {
-    Utility.WriteSpacedLine($"There were no folders in workspace. Closing application.");
+    ConsoleUtility.WriteSpacedLine($"There were no folders in workspace. Closing application.");
     return;
 }
 
-Utility.WriteSpacedLine($"Workspace path: {xmlReaderUtility.RootDirectory.FullName}");
+ConsoleUtility.WriteSpacedLine($"Workspace path: {xmlReaderUtility.RootDirectory.FullName}");
 
-var foldersToAnalyze = Utility.GetFoldersToAnalyze(xmlReaderUtility);
+var foldersToAnalyze = ConsoleUtility.GetFoldersToAnalyze(xmlReaderUtility);
 
 if (foldersToAnalyze.Count == 0)
 {
-    Utility.WriteSpacedLine($"There were no folders in workspace. Closing application.");
+    ConsoleUtility.WriteSpacedLine($"There were no folders in workspace. Closing application.");
     return;
 }
 
@@ -40,8 +40,8 @@ AnsiConsole.Status()
     .Start("Analyzing files...", ctx =>
     {
         AnsiConsole.WriteLine();
-        Utility.AnalyzeFolders(xmlReaderUtility, foldersToAnalyze);
-        Utility.WriteSpacedLine("Analysis Complete!");
+        ConsoleUtility.AnalyzeAndExportResults(xmlReaderUtility, foldersToAnalyze);
+        ConsoleUtility.WriteSpacedLine("Analysis Complete!");
     });
 
 

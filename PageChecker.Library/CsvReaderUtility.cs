@@ -4,12 +4,7 @@ namespace PageChecker.Library
 {
     public class CsvReaderUtility : ReaderBase, IReaderUtility
     {
-        public List<Market> CompareSheetsData(List<Market> marketSheetData, List<SalesRun> salesSheetData)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ExportResults(string folderPath)
+        public void ExportResults(string folderPath, string marketSheetFilename, string salesSheetFilename)
         {
             throw new NotImplementedException();
         }
@@ -20,16 +15,6 @@ namespace PageChecker.Library
         }
 
         public List<SalesRun> GetSalesSheetData()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OpenMarketSheet(string filename)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OpenSalesSheet(string filename)
         {
             throw new NotImplementedException();
         }
