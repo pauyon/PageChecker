@@ -5,6 +5,8 @@ namespace PageChecker.Library
     public interface IReaderBase
     {
         public DirectoryInfo WorkspaceDirectory { get; set; }
+        public List<string> MarketSheetHeaders { get; set; }
+        public List<string> SalesSheetHeaders { get; set; }
 
         public double GetPageSizeNumericValue(string pageDescription);
         public void SetWorkspaceDirectoryPath(string directoryPath);

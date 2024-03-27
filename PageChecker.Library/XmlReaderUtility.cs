@@ -10,10 +10,11 @@ public class XmlReaderUtility : ReaderBase, IReaderUtility
 
     public List<Market> GetMarketSheetData()
     {
-        var worksheet = MarketWorkbook.Worksheets.Worksheet(1);
-        var rows = worksheet.RangeUsed().RowsUsed().Skip(2); // Skip header row
-
         var marketData = new List<Market>();
+        var worksheet = MarketWorkbook.Worksheets.Worksheet(1);
+
+        MarketSheetHeaders = GetWorksheetHeaders(worksheet, skip: 1, take: 1);
+        var rows = worksheet.RangeUsed().RowsUsed().Skip(2); // Skip header row
 
         foreach (var row in rows)
         {
@@ -22,16 +23,14 @@ public class XmlReaderUtility : ReaderBase, IReaderUtility
                 break;
             }
 
-            var customer = row.Cell(1).Value.ToString();
-            var size = row.Cell(2).Value.ToString();
-            var rep = row.Cell(3).Value.ToString();
-            var categories = row.Cell(4).Value.ToString();
-            var contractStatus = row.Cell(5).Value.ToString();
-            var artwork = row.Cell(6).Value.ToString();
-            var notes = row.Cell(7).Value.ToString();
-            var placement = row.Cell(8).Value.ToString();
-            var accountingNotes = row.Cell(9).Value.ToString();
-
+            var customer = row.Cell(MarketSheetHeaders.IndexOf("Customer") + 1).Value.ToString();
+            var size = row.Cell(MarketSheetHeaders.IndexOf("Size") + 1).Value.ToString();
+            var rep = row.Cell(MarketSheetHeaders.IndexOf("Rep") + 1).Value.ToString();
+            var categories = row.Cell(MarketSheetHeaders.IndexOf("Categories") + 1).Value.ToString();
+            var contractStatus = row.Cell(MarketSheetHeaders.IndexOf("Contract Status") + 1).Value.ToString();
+            var artwork = row.Cell(MarketSheetHeaders.IndexOf("Artwork") + 1).Value.ToString();
+            var notes = row.Cell(MarketSheetHeaders.IndexOf("Notes") + 1).Value.ToString();
+            var placement = row.Cell(MarketSheetHeaders.IndexOf("Placement") + 1).Value.ToString();
 
             marketData.Add(new Market
             {
@@ -43,7 +42,6 @@ public class XmlReaderUtility : ReaderBase, IReaderUtility
                 Artwork = artwork,
                 Notes = notes,
                 Placement = placement,
-                AccountingNotes = accountingNotes,
             });
         }
 
@@ -52,19 +50,21 @@ public class XmlReaderUtility : ReaderBase, IReaderUtility
 
     public List<SalesRun> GetSalesSheetData()
     {
+        var salesData = new List<SalesRun>();
         var worksheet = SalesRunWorkbook.Worksheets.Worksheet(1);
+
+        SalesSheetHeaders = GetWorksheetHeaders(worksheet, skip: 1, take: 1);
+
         var rows = worksheet.RangeUsed().RowsUsed().Skip(1); // Skip header row
 
-        var salesData = new List<SalesRun>();
-        
         foreach (var row in rows)
         {
-            var client = row.Cell(1).Value.ToString();
-            var product = row.Cell(2).Value.ToString();
-            var description = row.Cell(3).Value.ToString();
-            var salesRep = row.Cell(4).Value.ToString();
-            var net = row.Cell(5).Value.ToString();
-            var barter = row.Cell(6).Value.ToString();
+            var client = row.Cell(SalesSheetHeaders.IndexOf("Client") + 1).Value.ToString();
+            var product = row.Cell(SalesSheetHeaders.IndexOf("Product") + 1).Value.ToString();
+            var description = row.Cell(SalesSheetHeaders.IndexOf("Description") + 1).Value.ToString();
+            var salesRep = row.Cell(SalesSheetHeaders.IndexOf("Sales Rep") + 1).Value.ToString();
+            var net = row.Cell(SalesSheetHeaders.IndexOf("Net") + 1).Value.ToString();
+            var barter = row.Cell(SalesSheetHeaders.IndexOf("Barter") + 1).Value.ToString();
 
 
             salesData.Add(new SalesRun
@@ -74,7 +74,7 @@ public class XmlReaderUtility : ReaderBase, IReaderUtility
                 Description = description,
                 SalesRep = salesRep,
                 Net = net,
-                Barter  = barter,
+                Barter = barter,
             });
         }
 
@@ -95,5 +95,23 @@ public class XmlReaderUtility : ReaderBase, IReaderUtility
         var checkedMarketData = CompareSheetsData(marketSheetData, salesRunSheetData);
 
         GenerateResultsExcel(checkedMarketData, resultsExportPath);
+    }
+
+    private List<string> GetWorksheetHeaders(IXLWorksheet worksheet, int skip, int take)
+    {
+        var headers = new List<string>();
+        var headerRow = worksheet.RangeUsed().RowsUsed().Skip(skip).Take(take);
+
+        foreach (var row in headerRow)
+        {
+            var cells = row.Cells();
+
+            foreach (var cell in cells)
+            {
+                headers.Add(cell.Value.ToString());
+            }
+        }
+
+        return headers;
     }
 }

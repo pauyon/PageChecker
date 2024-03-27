@@ -7,6 +7,8 @@ namespace PageChecker.Library
     public class ReaderBase : IReaderBase
     {
         public DirectoryInfo WorkspaceDirectory { get; set; } = new DirectoryInfo(".");
+        public List<string> MarketSheetHeaders { get; set; } = new();
+        public List<string> SalesSheetHeaders { get; set; } = new();
 
         /// <summary>
         /// Gets the numeric page size value of a string page size.
