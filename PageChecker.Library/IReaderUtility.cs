@@ -4,8 +4,8 @@ namespace PageChecker.Library
 {
     public interface IReaderUtility : IReaderBase
     {
-        List<Market> GetMarketSheetData();
+        List<MarketClient> GetMarketClientSheetData();
         List<SalesRun> GetSalesSheetData();
-        void AnalyzeAndExportResults(string folderPath, string marketSheetFilename, string salesSheetFilename);
+        void AnalyzeAndExportResults(string folderPath, string marketClientSheetFilename, string salesSheetFilename);
     }
 }

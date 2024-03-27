@@ -4,19 +4,27 @@ namespace PageChecker.Library
 {
     public class CsvReaderUtility : ReaderBase, IReaderUtility
     {
-        public void AnalyzeAndExportResults(string folderPath, string marketSheetFilename, string salesSheetFilename)
+        public void AnalyzeAndExportResults(string folderPath, string marketClientSheetFilename, string salesSheetFilename)
         {
             throw new NotImplementedException();
         }
 
-        public List<Market> GetMarketSheetData()
+        public List<MarketClient> GetMarketClientSheetData()
         {
-            throw new NotImplementedException();
+            var marketData = new List<MarketClient>();
+
+            SalesSheetHeaders = new();
+
+            return marketData;
         }
 
         public List<SalesRun> GetSalesSheetData()
         {
-            throw new NotImplementedException();
+            var salesRunData = new List<SalesRun>();
+
+            SalesSheetHeaders = new();
+
+            return salesRunData;
         }
     }
 }

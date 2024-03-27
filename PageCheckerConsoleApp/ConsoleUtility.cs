@@ -14,11 +14,11 @@ public static class ConsoleUtility
         AnsiConsole.MarkupLine("Before starting, ensure the following:");
         AnsiConsole.MarkupLine("======================================");
         AnsiConsole.WriteLine();
-        AnsiConsole.MarkupLine("1. Create a [green]workspace[/] folder. This will contain all [green]client[/] folders for analysis.");
-        AnsiConsole.MarkupLine("2. Within each [green]client[/] folder include the [green]market spreadsheet[/] and [green]sales run spreadsheet[/] files.");
+        AnsiConsole.MarkupLine("1. Create a [green]workspace[/] folder. This will contain all [green]market[/] folders for analysis.");
+        AnsiConsole.MarkupLine("2. Within each [green]market[/] folder include the [green]market client spreadsheet[/] and [green]sales run spreadsheet[/] files.");
         AnsiConsole.MarkupLine("3. Ensure the spreadsheets in each folder are in excel format ([green].xlsx[/]).");
-        AnsiConsole.MarkupLine("4. Ensure the sales spreadsheets contains the keywords [green]'sales run sheet'[/] OR [green]'salesrunsheet'[/].");
-        AnsiConsole.MarkupLine("5. Ensure there is only [green]1 market/client spreadsheet[/] and [green]1 sales run spreadsheet[/] per folder.");
+        AnsiConsole.MarkupLine("4. Ensure the sales spreadsheets contains any of the following keywords: '[green]sales run sheet[/]', '[green]salesrun sheet[/]', or '[green]salesrunsheet'[/]");
+        AnsiConsole.MarkupLine("5. Ensure there is only [green]1 market client spreadsheet[/] and [green]1 sales run spreadsheet[/] per folder.");
         AnsiConsole.WriteLine("");
     }
 
@@ -162,11 +162,11 @@ public static class ConsoleUtility
                 files.Remove(salesRunSheetFilename);
             }
 
-            var marketSheetFilename = files[0];
+            var marketClientSheetFilename = files[0];
 
             xmlReaderUtility.AnalyzeAndExportResults(
                 fullFolderPath, 
-                Path.Combine(fullFolderPath, marketSheetFilename), 
+                Path.Combine(fullFolderPath, marketClientSheetFilename), 
                 Path.Combine(fullFolderPath, salesRunSheetFilename));
 
             AnsiConsole.MarkupLine($"Folder [green]{folderName}[/] analyzed successfully.");

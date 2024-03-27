@@ -7,7 +7,7 @@ namespace PageChecker.Library
     public class ReaderBase : IReaderBase
     {
         public DirectoryInfo WorkspaceDirectory { get; set; } = new DirectoryInfo(".");
-        public List<string> MarketSheetHeaders { get; set; } = new();
+        public List<string> MarketClientSheetHeaders { get; set; } = new();
         public List<string> SalesSheetHeaders { get; set; } = new();
 
         /// <summary>
@@ -69,14 +69,14 @@ namespace PageChecker.Library
         /// <summary>
         /// Compare market sheet and sales run sheet data.
         /// </summary>
-        /// <param name="marketSheetData">List of data within market sheet.</param>
+        /// <param name="marketClientSheetData">List of data within market sheet.</param>
         /// <param name="salesRunSheetData">List of data within sales run sheet.</param>
         /// <returns>List of market data after comparison.</returns>
-        public List<Market> CompareSheetsData(List<Market> marketSheetData, List<SalesRun> salesRunSheetData)
+        public List<MarketClient> CompareSheetsData(List<MarketClient> marketClientSheetData, List<SalesRun> salesRunSheetData)
         {
             foreach (var salesRow in salesRunSheetData)
             {
-                foreach (var marketRow in marketSheetData)
+                foreach (var marketRow in marketClientSheetData)
                 {
                     var salesClient = Regex.Replace(salesRow.Client.ToLower(), @"\([a-zA-Z0-9 .-]+\)", "").Replace(" ", "");
                     var marketClient = marketRow.Customer.ToLower().Replace(" ", "");
@@ -92,7 +92,7 @@ namespace PageChecker.Library
                 }
             }
 
-            return marketSheetData;
+            return marketClientSheetData;
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace PageChecker.Library
         /// </summary>
         /// <param name="checkedMarketData">List of market data that has been processed.</param>
         /// <param name="resultsExportPath">Export path of results excel file.</param>
-        public void GenerateResultsExcel(List<Market> checkedMarketData, string resultsExportPath)
+        public void GenerateResultsExcel(List<MarketClient> checkedMarketData, string resultsExportPath)
         {
             var workbook = new XLWorkbook();
             var ws = workbook.Worksheets.Add("Report");

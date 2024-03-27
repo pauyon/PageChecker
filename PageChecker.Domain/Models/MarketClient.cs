@@ -2,7 +2,7 @@
 
 namespace PageChecker.Domain.Models;
 
-public class Market
+public class MarketClient
 {
     public bool PassedCheck { get; set; } = false;
     public string Customer { get; set; }

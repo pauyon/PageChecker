@@ -8,12 +8,12 @@ public class XmlReaderUtility : ReaderBase, IReaderUtility
     public XLWorkbook MarketWorkbook { get; internal set; } = new XLWorkbook();
     public XLWorkbook SalesRunWorkbook { get; internal set; } = new XLWorkbook();
 
-    public List<Market> GetMarketSheetData()
+    public List<MarketClient> GetMarketClientSheetData()
     {
-        var marketData = new List<Market>();
+        var marketData = new List<MarketClient>();
         var worksheet = MarketWorkbook.Worksheets.Worksheet(1);
 
-        MarketSheetHeaders = GetWorksheetHeaders(worksheet, skip: 1, take: 1);
+        MarketClientSheetHeaders = GetWorksheetHeaders(worksheet, skip: 1, take: 1);
         var rows = worksheet.RangeUsed().RowsUsed().Skip(2); // Skip header row
 
         foreach (var row in rows)
@@ -23,16 +23,16 @@ public class XmlReaderUtility : ReaderBase, IReaderUtility
                 break;
             }
 
-            var customer = row.Cell(MarketSheetHeaders.IndexOf("Customer") + 1).Value.ToString();
-            var size = row.Cell(MarketSheetHeaders.IndexOf("Size") + 1).Value.ToString();
-            var rep = row.Cell(MarketSheetHeaders.IndexOf("Rep") + 1).Value.ToString();
-            var categories = row.Cell(MarketSheetHeaders.IndexOf("Categories") + 1).Value.ToString();
-            var contractStatus = row.Cell(MarketSheetHeaders.IndexOf("Contract Status") + 1).Value.ToString();
-            var artwork = row.Cell(MarketSheetHeaders.IndexOf("Artwork") + 1).Value.ToString();
-            var notes = row.Cell(MarketSheetHeaders.IndexOf("Notes") + 1).Value.ToString();
-            var placement = row.Cell(MarketSheetHeaders.IndexOf("Placement") + 1).Value.ToString();
+            var customer = row.Cell(MarketClientSheetHeaders.IndexOf("Customer") + 1).Value.ToString();
+            var size = row.Cell(MarketClientSheetHeaders.IndexOf("Size") + 1).Value.ToString();
+            var rep = row.Cell(MarketClientSheetHeaders.IndexOf("Rep") + 1).Value.ToString();
+            var categories = row.Cell(MarketClientSheetHeaders.IndexOf("Categories") + 1).Value.ToString();
+            var contractStatus = row.Cell(MarketClientSheetHeaders.IndexOf("Contract Status") + 1).Value.ToString();
+            var artwork = row.Cell(MarketClientSheetHeaders.IndexOf("Artwork") + 1).Value.ToString();
+            var notes = row.Cell(MarketClientSheetHeaders.IndexOf("Notes") + 1).Value.ToString();
+            var placement = row.Cell(MarketClientSheetHeaders.IndexOf("Placement") + 1).Value.ToString();
 
-            marketData.Add(new Market
+            marketData.Add(new MarketClient
             {
                 Customer = customer,
                 Size = Convert.ToDouble(size),
@@ -81,18 +81,18 @@ public class XmlReaderUtility : ReaderBase, IReaderUtility
         return salesData;
     }
 
-    public void AnalyzeAndExportResults(string folderPath, string marketSheetPath, string salesRunPath)
+    public void AnalyzeAndExportResults(string folderPath, string marketClientSheetPath, string salesRunPath)
     {
-        MarketWorkbook = new XLWorkbook(marketSheetPath);
+        MarketWorkbook = new XLWorkbook(marketClientSheetPath);
         SalesRunWorkbook = new XLWorkbook(salesRunPath);
 
         var resultsExportPath = Path.Combine(folderPath, "Results.xlsx");
 
         RemoveExistingResultsExcel(resultsExportPath);
 
-        var marketSheetData = GetMarketSheetData();
+        var marketClientSheetData = GetMarketClientSheetData();
         var salesRunSheetData = GetSalesSheetData();
-        var checkedMarketData = CompareSheetsData(marketSheetData, salesRunSheetData);
+        var checkedMarketData = CompareSheetsData(marketClientSheetData, salesRunSheetData);
 
         GenerateResultsExcel(checkedMarketData, resultsExportPath);
     }
