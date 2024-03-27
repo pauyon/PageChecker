@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="CsvReaderUtility.cs~RF294ae56.TMP" />
+    <None Remove="IReaderUtility.cs~RF28f0f40.TMP" />
+    <None Remove="IReaderUtility.cs~RF291b828.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.102.2" />
   </ItemGroup>
 
