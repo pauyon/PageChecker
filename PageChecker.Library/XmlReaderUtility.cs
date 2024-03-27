@@ -88,7 +88,7 @@ public class XmlReaderUtility : ReaderBase, IReaderUtility
 
         var resultsExportPath = Path.Combine(folderPath, "Results.xlsx");
 
-        RemoveExistingResultsXml(resultsExportPath);
+        RemoveExistingResultsExcel(resultsExportPath);
 
         var marketSheetData = GetMarketSheetData();
         var salesRunSheetData = GetSalesSheetData();

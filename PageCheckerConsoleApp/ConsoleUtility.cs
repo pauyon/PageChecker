@@ -5,7 +5,10 @@ namespace PageChecker.ConsoleApp;
 
 public static class ConsoleUtility
 {
-    public static void ShowInstructions()
+    /// <summary>
+    /// Write instructions for folder structure to console.
+    /// </summary>
+    public static void ShowChecklist()
     {
         AnsiConsole.WriteLine();
         AnsiConsole.MarkupLine("Before starting, ensure the following:");
@@ -19,7 +22,11 @@ public static class ConsoleUtility
         AnsiConsole.WriteLine("");
     }
 
-    public static bool AreFilesReady()
+    /// <summary>
+    /// Prompts user if the checklist has been complete.
+    /// </summary>
+    /// <returns>Bool value of true or false.</returns>
+    public static bool CheckListCompletePrompt()
     {
         if (!AnsiConsole.Confirm("Have you completed everything on the checklist?"))
         {
@@ -31,7 +38,11 @@ public static class ConsoleUtility
         return true;
     }
 
-    public static string GetWorkspaceRootPath()
+    /// <summary>
+    /// Prompts user for a workspace folder path. Returns working directory path by default.
+    /// </summary>
+    /// <returns>Full path of workspace folder.</returns>
+    public static string WorkspacePathPrompt()
     {
         string rootPath = "./";
 
@@ -43,6 +54,11 @@ public static class ConsoleUtility
         return rootPath;
     }
 
+    /// <summary>
+    /// Gets a list of folder names located within the workspace folder.
+    /// </summary>
+    /// <param name="path">Path of workspace folder.</param>
+    /// <returns>List of folder names of workspace folder path.</returns>
     public static List<string> GetWorkspaceRootPathFolders(string path)
     {
         var directory = new DirectoryInfo(path);
@@ -51,9 +67,13 @@ public static class ConsoleUtility
         return folders;
     }
 
-    public static string GetWorkspaceFolderPath()
+    /// <summary>
+    /// Prompts user for the path of the workspace folder to work with.
+    /// </summary>
+    /// <returns>Full path of workspace folder.</returns>
+    public static string WorkspaceFolderPrompt()
     {
-        var rootPath = GetWorkspaceRootPath();
+        var rootPath = WorkspacePathPrompt();
         var folders = GetWorkspaceRootPathFolders(rootPath);
 
         var folderName = AnsiConsole.Prompt(
@@ -66,9 +86,15 @@ public static class ConsoleUtility
         return Path.Combine(rootPath, folderName);
     }
 
-    public static List<string> GetFoldersToAnalyze(XmlReaderUtility xmlReaderUtility)
+    /// <summary>
+    /// Prompts user for list of folders within workspace folder to analyze.
+    /// All folders selected by default.
+    /// </summary>
+    /// <param name="xmlReaderUtility">Tool for reading spreadsheets.</param>
+    /// <returns>List of folder names to analyze.</returns>
+    public static List<string> SelectWorkspaceFoldersPrompt(XmlReaderUtility xmlReaderUtility)
     {
-        List<string> foldersToAnalyze = xmlReaderUtility.GetRootDirectoryFolders();
+        List<string> foldersToAnalyze = xmlReaderUtility.GetWorkspaceFolders();
 
         if (!AnsiConsole.Confirm($"[green]{foldersToAnalyze.Count}[/] folders were found in workspace. Run analyzer on all files?"))
         {
@@ -81,12 +107,18 @@ public static class ConsoleUtility
                 .InstructionsText(
                     "[grey](Press [blue]<space>[/] to toggle a folder, " +
                     "[green]<enter>[/] to accept)[/]")
-                .AddChoices(xmlReaderUtility.GetRootDirectoryFolders()));
+                .AddChoices(xmlReaderUtility.GetWorkspaceFolders()));
         }
 
         return foldersToAnalyze;
     }
 
+    /// <summary>
+    /// Return list of files within a given folder path and extension.
+    /// </summary>
+    /// <param name="path">Folder path.</param>
+    /// <param name="validExtension">File extension.</param>
+    /// <returns></returns>
     public static List<string> GetFolderFiles(string path, string validExtension)
     {
         var directory = new DirectoryInfo(path);
@@ -96,11 +128,16 @@ public static class ConsoleUtility
         return files;
     }
 
+    /// <summary>
+    /// Analyze folders selected and export results to excel file.
+    /// </summary>
+    /// <param name="xmlReaderUtility">Tool for reading spreadsheet data.</param>
+    /// <param name="folderNames">List of folders to analyze.</param>
     public static void AnalyzeAndExportResults(XmlReaderUtility xmlReaderUtility, List<string> folderNames)
     {
         foreach (string folderName in folderNames)
         {
-            var fullFolderPath = Path.Combine(xmlReaderUtility.RootDirectory.FullName, folderName);
+            var fullFolderPath = Path.Combine(xmlReaderUtility.WorkspaceDirectory.FullName, folderName);
             var files = GetFolderFiles(fullFolderPath, ".xlsx");
 
             if (files == null || files.Count == 0)
@@ -126,6 +163,10 @@ public static class ConsoleUtility
         }
     }
 
+    /// <summary>
+    /// Write text to console with a new line above and below text.
+    /// </summary>
+    /// <param name="text"></param>
     public static void WriteSpacedLine(string text)
     {
         AnsiConsole.WriteLine();

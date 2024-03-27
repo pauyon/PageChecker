@@ -6,8 +6,13 @@ namespace PageChecker.Library
 {
     public class ReaderBase
     {
-        public DirectoryInfo RootDirectory { get; private set; } = new DirectoryInfo(".");
+        public DirectoryInfo WorkspaceDirectory { get; private set; } = new DirectoryInfo(".");
 
+        /// <summary>
+        /// Gets the numeric page size value of a string page size.
+        /// </summary>
+        /// <param name="pageDescription">String value of page size.</param>
+        /// <returns>Numeric value of page size.</returns>
         public static double GetPageSizeNumericValue(string pageDescription)
         {
             if (string.IsNullOrEmpty(pageDescription))
@@ -28,18 +33,30 @@ namespace PageChecker.Library
             return 0;
         }
 
-        public void SetRootDirectoryPath(string directoryPath)
+        /// <summary>
+        /// Sets path of workspace directory.
+        /// </summary>
+        /// <param name="directoryPath">Full path of workspace directory.</param>
+        public void SetWorkspaceDirectoryPath(string directoryPath)
         {
-            RootDirectory = new DirectoryInfo(directoryPath);
+            WorkspaceDirectory = new DirectoryInfo(directoryPath);
         }
 
-        public List<string> GetRootDirectoryFolders()
+        /// <summary>
+        /// Gets all files within the workspace directory.
+        /// </summary>
+        /// <returns></returns>
+        public List<string> GetWorkspaceFolders()
         {
-            var folders = RootDirectory.GetDirectories().Select(x => x.Name).ToList();
+            var folders = WorkspaceDirectory.GetDirectories().Select(x => x.Name).ToList();
             return folders;
         }
 
-        public void RemoveExistingResultsXml(string resultsSheetFilePath)
+        /// <summary>
+        /// Deletes existing results excel file.
+        /// </summary>
+        /// <param name="resultsSheetFilePath">Path of results excel file.</param>
+        public void RemoveExistingResultsExcel(string resultsSheetFilePath)
         {
             if (File.Exists(resultsSheetFilePath))
             {
@@ -47,6 +64,12 @@ namespace PageChecker.Library
             }
         }
 
+        /// <summary>
+        /// Compare market sheet and sales run sheet data.
+        /// </summary>
+        /// <param name="marketSheetData">List of data within market sheet.</param>
+        /// <param name="salesRunSheetData">List of data within sales run sheet.</param>
+        /// <returns>List of market data after comparison.</returns>
         public List<Market> CompareSheetsData(List<Market> marketSheetData, List<SalesRun> salesRunSheetData)
         {
             foreach (var salesRow in salesRunSheetData)
@@ -70,6 +93,11 @@ namespace PageChecker.Library
             return marketSheetData;
         }
 
+        /// <summary>
+        /// Export processed data to excel file.
+        /// </summary>
+        /// <param name="checkedMarketData">List of market data that has been processed.</param>
+        /// <param name="resultsExportPath">Export path of results excel file.</param>
         public void GenerateResultsExcel(List<Market> checkedMarketData, string resultsExportPath)
         {
             var workbook = new XLWorkbook();
@@ -85,10 +113,6 @@ namespace PageChecker.Library
             ws.Cell(rowNum, 4).Value = "Rep";
             ws.Cell(rowNum, 5).Value = "Categories";
             ws.Cell(rowNum, 6).Value = "Contract Status";
-            /*ws.Cell(rowNum, 7).Value = "Artwork";
-            ws.Cell(rowNum, 8).Value = "Notes";
-            ws.Cell(rowNum, 9).Value = "Placement";
-            ws.Cell(rowNum, 10).Value = "Accounting Notes";*/
 
             foreach (var item in checkedMarketData)
             {
@@ -100,10 +124,6 @@ namespace PageChecker.Library
                 ws.Cell(rowNum, 4).Value = item.Rep;
                 ws.Cell(rowNum, 5).Value = item.Categories;
                 ws.Cell(rowNum, 6).Value = item.ContractStatus;
-                /*ws.Cell(rowNum, 7).Value = item.Artwork;
-                ws.Cell(rowNum, 8).Value = item.Notes;
-                ws.Cell(rowNum, 9).Value = item.Placement;
-                ws.Cell(rowNum, 10).Value = item.AccountingNotes;*/
 
                 ws.Range(rowNum, 1, 1, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
