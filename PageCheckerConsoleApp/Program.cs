@@ -15,7 +15,8 @@ ConsoleUtility.ShowChecklist();
 if (!ConsoleUtility.CheckListCompletePrompt()) return;
 
 // Get workspace folder path
-var xmlReaderUtility = new XmlReaderUtility();
+IReaderUtility xmlReaderUtility = new XmlReaderUtility();
+
 var workspaceFolderPath = ConsoleUtility.WorkspaceFolderPrompt().EscapeMarkup();
 xmlReaderUtility.SetWorkspaceDirectoryPath(workspaceFolderPath);
 

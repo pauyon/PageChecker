@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace PageChecker.Library
 {
-    public class ReaderBase
+    public class ReaderBase : IReaderBase
     {
         public DirectoryInfo WorkspaceDirectory { get; set; } = new DirectoryInfo(".");
 
@@ -13,7 +13,7 @@ namespace PageChecker.Library
         /// </summary>
         /// <param name="pageDescription">String value of page size.</param>
         /// <returns>Numeric value of page size.</returns>
-        public static double GetPageSizeNumericValue(string pageDescription)
+        public double GetPageSizeNumericValue(string pageDescription)
         {
             if (string.IsNullOrEmpty(pageDescription))
             {

@@ -92,7 +92,7 @@ public static class ConsoleUtility
     /// </summary>
     /// <param name="xmlReaderUtility">Tool for reading spreadsheets.</param>
     /// <returns>List of folder names to analyze.</returns>
-    public static List<string> SelectWorkspaceFoldersPrompt(XmlReaderUtility xmlReaderUtility)
+    public static List<string> SelectWorkspaceFoldersPrompt(IReaderUtility xmlReaderUtility)
     {
         List<string> foldersToAnalyze = xmlReaderUtility.GetWorkspaceFolders();
 
