@@ -7,7 +7,7 @@ namespace PageChecker.Library;
 public class XmlReaderUtility : ReaderBase, IReaderUtility
 {
     public XLWorkbook MarketWorkbook { get; internal set; } = new XLWorkbook();
-    public XLWorkbook SalesWorkbook { get; internal set; } = new XLWorkbook();
+    public XLWorkbook SalesRunWorkbook { get; internal set; } = new XLWorkbook();
 
     public List<Market> GetMarketSheetData()
     {
@@ -53,7 +53,7 @@ public class XmlReaderUtility : ReaderBase, IReaderUtility
 
     public List<SalesRun> GetSalesSheetData()
     {
-        var worksheet = SalesWorkbook.Worksheets.Worksheet(1);
+        var worksheet = SalesRunWorkbook.Worksheets.Worksheet(1);
         var rows = worksheet.RangeUsed().RowsUsed().Skip(1); // Skip header row
 
         var salesData = new List<SalesRun>();
@@ -82,18 +82,18 @@ public class XmlReaderUtility : ReaderBase, IReaderUtility
         return salesData;
     }
 
-    public void ExportResults(string folderPath, string marketSheetFilename, string salesSheetFilename)
+    public void ExportResults(string folderPath, string marketSheetFilename, string salesRunSheetFilename)
     {
         MarketWorkbook = new XLWorkbook(Path.Combine(folderPath, marketSheetFilename));
-        SalesWorkbook = new XLWorkbook(Path.Combine(folderPath, salesSheetFilename));
+        SalesRunWorkbook = new XLWorkbook(Path.Combine(folderPath, salesRunSheetFilename));
 
         var resultsExportPath = Path.Combine(folderPath, "Results.xlsx");
 
         RemoveExistingResultsXml(resultsExportPath);
 
         var marketSheetData = GetMarketSheetData();
-        var salesSheetData = GetSalesSheetData();
-        var checkedMarketData = CompareSheetsData(marketSheetData, salesSheetData);
+        var salesRunSheetData = GetSalesSheetData();
+        var checkedMarketData = CompareSheetsData(marketSheetData, salesRunSheetData);
 
         GenerateResultsExcel(checkedMarketData, resultsExportPath);
     }

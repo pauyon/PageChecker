@@ -96,30 +96,33 @@ public static class ConsoleUtility
         return files;
     }
 
-    public static void AnalyzeAndExportResults(XmlReaderUtility xmlReaderUtility, List<string> folders)
+    public static void AnalyzeAndExportResults(XmlReaderUtility xmlReaderUtility, List<string> folderNames)
     {
-        foreach (string folder in folders)
+        foreach (string folderName in folderNames)
         {
-            var folderPath = Path.Combine(xmlReaderUtility.RootDirectory.FullName, folder);
-            var files = GetFolderFiles(folderPath);
+            var fullFolderPath = Path.Combine(xmlReaderUtility.RootDirectory.FullName, folderName);
+            var files = GetFolderFiles(fullFolderPath);
 
             if (files == null || files.Count == 0)
             {
-                AnsiConsole.MarkupLine($"Folder [green]{folder}[/] skipped. No spreadsheets found.");
+                AnsiConsole.MarkupLine($"Folder [green]{folderName}[/] skipped. No spreadsheets found.");
                 continue;
             }
 
             if (files.Count > 2)
             {
-                AnsiConsole.MarkupLine($"Folder [green]{folder}[/] skipped. Too many spreadsheets found.");
+                AnsiConsole.MarkupLine($"Folder [green]{folderName}[/] skipped. Too many spreadsheets found.");
                 continue;
             }
 
-            var salesSheetFilename = files.First(x => x.ToLower().Contains("salessheet") || x.ToLower().Contains("sales sheet"));
-            var marketSheetFilename = files.First(x => !x.ToLower().Contains("salessheet") || !x.ToLower().Contains("sales sheet"));
+            var salesRunSheetFilename = files.First(x => x.ToLower().Replace(" ", "").Contains("salesrunsheet"));
 
-            xmlReaderUtility.ExportResults(folderPath, marketSheetFilename, salesSheetFilename);
-            AnsiConsole.MarkupLine($"Folder [green]{folder}[/] analyzed successfully.");
+            files.Remove(salesRunSheetFilename);
+
+            var marketSheetFilename = files[0];
+
+            xmlReaderUtility.ExportResults(fullFolderPath, marketSheetFilename, salesRunSheetFilename);
+            AnsiConsole.MarkupLine($"Folder [green]{folderName}[/] analyzed successfully.");
         }
     }
 

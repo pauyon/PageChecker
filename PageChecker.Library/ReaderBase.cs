@@ -47,9 +47,9 @@ namespace PageChecker.Library
             }
         }
 
-        public List<Market> CompareSheetsData(List<Market> marketSheetData, List<SalesRun> salesSheetData)
+        public List<Market> CompareSheetsData(List<Market> marketSheetData, List<SalesRun> salesRunSheetData)
         {
-            foreach (var salesRow in salesSheetData)
+            foreach (var salesRow in salesRunSheetData)
             {
                 foreach (var marketRow in marketSheetData)
                 {
