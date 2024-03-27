@@ -127,7 +127,10 @@ public static class Utility
             }
 
             var salesSheet = files.First(x => x.ToLower().Contains("salessheet") || x.ToLower().Contains("sales sheet"));
-            var marketSheet = files.First(x => !x.ToLower().Contains("salessheet") || !x.ToLower().Contains("sales sheet"));
+
+            files.Remove(salesSheet);
+
+            var marketSheet = files.First();
 
             XmlReaderUtility.OpenSalesSheet(Path.Combine(folderPath, salesSheet));
             XmlReaderUtility.OpenMarketSheet(Path.Combine(folderPath, marketSheet));
