@@ -14,7 +14,7 @@ public static class ConsoleUtility
         AnsiConsole.MarkupLine("1. Create a [green]workspace[/] folder. This will contain all [green]client[/] folders for analysis.");
         AnsiConsole.MarkupLine("2. Within each [green]client[/] folder include the [green]market spreadsheet[/] and [green]sales run spreadsheet[/] files.");
         AnsiConsole.MarkupLine("3. Ensure the spreadsheets in each folder are in excel format ([green].xlsx[/]).");
-        AnsiConsole.MarkupLine("4. Ensure the sales spreadsheets contains the keywords [green]'sales sheet'[/] OR [green]'salessheet'[/].");
+        AnsiConsole.MarkupLine("4. Ensure the sales spreadsheets contains the keywords [green]'sales run sheet'[/] OR [green]'salesrunsheet'[/].");
         AnsiConsole.MarkupLine("5. Ensure there is only [green]1 market/client spreadsheet[/] and [green]1 sales run spreadsheet[/] per folder.");
         AnsiConsole.WriteLine("");
     }
@@ -87,11 +87,11 @@ public static class ConsoleUtility
         return foldersToAnalyze;
     }
 
-    public static List<string> GetFolderFiles(string path)
+    public static List<string> GetFolderFiles(string path, string validExtension)
     {
         var directory = new DirectoryInfo(path);
 
-        var files = directory.GetFiles().Where(x => !x.Name.ToLower().Contains("results")).Select(x => x.Name).ToList();
+        var files = directory.GetFiles().Where(x => !x.Name.ToLower().Contains("results") && x.Extension == validExtension).Select(x => x.Name).ToList();
 
         return files;
     }
@@ -101,7 +101,7 @@ public static class ConsoleUtility
         foreach (string folderName in folderNames)
         {
             var fullFolderPath = Path.Combine(xmlReaderUtility.RootDirectory.FullName, folderName);
-            var files = GetFolderFiles(fullFolderPath);
+            var files = GetFolderFiles(fullFolderPath, ".xlsx");
 
             if (files == null || files.Count == 0)
             {

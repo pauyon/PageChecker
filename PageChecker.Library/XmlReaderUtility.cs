@@ -1,6 +1,5 @@
 ﻿using ClosedXML.Excel;
 using PageChecker.Domain.Models;
-using System.Text.RegularExpressions;
 
 namespace PageChecker.Library;
 
