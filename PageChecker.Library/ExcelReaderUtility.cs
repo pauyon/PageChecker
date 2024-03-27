@@ -86,7 +86,8 @@ public class ExcelReaderUtility : FileReaderBase, IFileReaderUtility
         MarketWorkbook = new XLWorkbook(marketClientSheetPath);
         SalesRunWorkbook = new XLWorkbook(salesRunPath);
 
-        var resultsExportPath = Path.Combine(folderPath, "Results.xlsx");
+        var marketFolder = folderPath.Split("\\").Last();
+        var resultsExportPath = Path.Combine(folderPath, $"{marketFolder}-Results.xlsx");
 
         RemoveExistingResultsExcel(resultsExportPath);
 

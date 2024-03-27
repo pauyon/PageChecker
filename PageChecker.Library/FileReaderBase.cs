@@ -103,7 +103,7 @@ namespace PageChecker.Library
         public void GenerateResultsExcel(List<MarketClient> checkedMarketData, string resultsExportPath)
         {
             var workbook = new XLWorkbook();
-            var ws = workbook.Worksheets.Add("Report");
+            var ws = workbook.Worksheets.Add("Results");
 
             ws.Range(1, 1, 1, 10).Style.Fill.SetBackgroundColor(XLColor.LightBlue);
 

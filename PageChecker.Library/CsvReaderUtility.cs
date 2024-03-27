@@ -13,7 +13,8 @@ namespace PageChecker.Library
             MarketClientSheet = new FileInfo(Path.Combine(folderPath, marketClientSheetFilename));
             SalesRunSheet = new FileInfo(Path.Combine(folderPath, salesSheetFilename));
 
-            var resultsExportPath = Path.Combine(folderPath, "Results.xlsx");
+            var marketFolder = folderPath.Split("\\").Last();
+            var resultsExportPath = Path.Combine(folderPath, $"{marketFolder}-Results.xlsx");
 
             RemoveExistingResultsExcel(resultsExportPath);
 
