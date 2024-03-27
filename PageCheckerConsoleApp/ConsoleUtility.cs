@@ -16,8 +16,8 @@ public static class ConsoleUtility
         AnsiConsole.WriteLine();
         AnsiConsole.MarkupLine("1. Create a [green]workspace[/] folder. This will contain all [green]market[/] folders for analysis.");
         AnsiConsole.MarkupLine("2. Within each [green]market[/] folder include the [green]market client spreadsheet[/] and [green]sales run spreadsheet[/] files.");
-        AnsiConsole.MarkupLine("3. Ensure the spreadsheets in each folder are in excel format ([green].xlsx[/]).");
-        AnsiConsole.MarkupLine("4. Ensure the sales spreadsheets contains any of the following keywords: '[green]sales run sheet[/]', '[green]salesrun sheet[/]', or '[green]salesrunsheet'[/]");
+        AnsiConsole.MarkupLine("3. Ensure the spreadsheets in each folder are in comma separated format ([green].csv[/]).");
+        AnsiConsole.MarkupLine("4. Ensure the sales run contains the following keywords: '[green]sales run sheet[/]', '[green]salesrun sheet[/]', or '[green]salesrunsheet'[/]");
         AnsiConsole.MarkupLine("5. Ensure there is only [green]1 market client spreadsheet[/] and [green]1 sales run spreadsheet[/] per folder.");
         AnsiConsole.WriteLine("");
     }
