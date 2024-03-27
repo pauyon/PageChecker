@@ -122,9 +122,7 @@ public static class ConsoleUtility
     public static List<string> GetFolderFiles(string path, string validExtension)
     {
         var directory = new DirectoryInfo(path);
-
         var files = directory.GetFiles().Where(x => !x.Name.ToLower().Contains("results") && x.Extension == validExtension).Select(x => x.Name).ToList();
-
         return files;
     }
 
@@ -133,7 +131,7 @@ public static class ConsoleUtility
     /// </summary>
     /// <param name="xmlReaderUtility">Tool for reading spreadsheet data.</param>
     /// <param name="folderNames">List of folders to analyze.</param>
-    public static void AnalyzeAndExportResults(XmlReaderUtility xmlReaderUtility, List<string> folderNames)
+    public static void AnalyzeAndExportResults(IReaderUtility xmlReaderUtility, List<string> folderNames)
     {
         foreach (string folderName in folderNames)
         {
@@ -152,9 +150,17 @@ public static class ConsoleUtility
                 continue;
             }
 
-            var salesRunSheetFilename = files.First(x => x.ToLower().Replace(" ", "").Contains("salesrunsheet"));
+            var salesRunSheetFilename = files.FirstOrDefault(x => x.ToLower().Replace(" ", "").Contains("salesrunsheet"));
 
-            files.Remove(salesRunSheetFilename);
+            if (salesRunSheetFilename == null)
+            {
+                AnsiConsole.MarkupLine($"Folder [green]{folderName}[/] skipped. Salesrun sheet is missing.");
+                continue;
+            }
+            else
+            {
+                files.Remove(salesRunSheetFilename);
+            }
 
             var marketSheetFilename = files[0];
 

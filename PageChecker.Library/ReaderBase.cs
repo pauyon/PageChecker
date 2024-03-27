@@ -6,7 +6,7 @@ namespace PageChecker.Library
 {
     public class ReaderBase
     {
-        public DirectoryInfo WorkspaceDirectory { get; private set; } = new DirectoryInfo(".");
+        public DirectoryInfo WorkspaceDirectory { get; set; } = new DirectoryInfo(".");
 
         /// <summary>
         /// Gets the numeric page size value of a string page size.
