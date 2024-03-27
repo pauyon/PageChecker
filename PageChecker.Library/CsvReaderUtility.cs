@@ -4,7 +4,7 @@ namespace PageChecker.Library
 {
     public class CsvReaderUtility : ReaderBase, IReaderUtility
     {
-        public void ExportResults(string folderPath, string marketSheetFilename, string salesSheetFilename)
+        public void AnalyzeAndExportResults(string folderPath, string marketSheetFilename, string salesSheetFilename)
         {
             throw new NotImplementedException();
         }

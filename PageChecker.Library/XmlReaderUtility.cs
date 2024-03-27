@@ -81,10 +81,10 @@ public class XmlReaderUtility : ReaderBase, IReaderUtility
         return salesData;
     }
 
-    public void ExportResults(string folderPath, string marketSheetFilename, string salesRunSheetFilename)
+    public void AnalyzeAndExportResults(string folderPath, string marketSheetPath, string salesRunPath)
     {
-        MarketWorkbook = new XLWorkbook(Path.Combine(folderPath, marketSheetFilename));
-        SalesRunWorkbook = new XLWorkbook(Path.Combine(folderPath, salesRunSheetFilename));
+        MarketWorkbook = new XLWorkbook(marketSheetPath);
+        SalesRunWorkbook = new XLWorkbook(salesRunPath);
 
         var resultsExportPath = Path.Combine(folderPath, "Results.xlsx");
 

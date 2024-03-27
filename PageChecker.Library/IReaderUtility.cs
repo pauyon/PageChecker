@@ -7,6 +7,6 @@ namespace PageChecker.Library
         DirectoryInfo WorkspaceDirectory { get; set; }
         List<Market> GetMarketSheetData();
         List<SalesRun> GetSalesSheetData();
-        void ExportResults(string folderPath, string marketSheetFilename, string salesSheetFilename);
+        void AnalyzeAndExportResults(string folderPath, string marketSheetFilename, string salesSheetFilename);
     }
 }

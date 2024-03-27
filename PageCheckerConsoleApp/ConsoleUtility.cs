@@ -164,7 +164,11 @@ public static class ConsoleUtility
 
             var marketSheetFilename = files[0];
 
-            xmlReaderUtility.ExportResults(fullFolderPath, marketSheetFilename, salesRunSheetFilename);
+            xmlReaderUtility.AnalyzeAndExportResults(
+                fullFolderPath, 
+                Path.Combine(fullFolderPath, marketSheetFilename), 
+                Path.Combine(fullFolderPath, salesRunSheetFilename));
+
             AnsiConsole.MarkupLine($"Folder [green]{folderName}[/] analyzed successfully.");
         }
     }
