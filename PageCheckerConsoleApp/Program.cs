@@ -15,7 +15,7 @@ ConsoleUtility.ShowChecklist();
 if (!ConsoleUtility.CheckListCompletePrompt()) return;
 
 // Get workspace folder path
-IReaderUtility xmlReaderUtility = new XmlReaderUtility();
+IReaderUtility xmlReaderUtility = new CsvReaderUtility();
 
 var workspaceFolderPath = ConsoleUtility.WorkspaceFolderPrompt().EscapeMarkup();
 xmlReaderUtility.SetWorkspaceDirectoryPath(workspaceFolderPath);
@@ -38,7 +38,7 @@ AnsiConsole.Status()
     .Start("Analyzing files...", ctx =>
     {
         AnsiConsole.WriteLine();
-        ConsoleUtility.AnalyzeAndExportResults(xmlReaderUtility, folderNames);
+        ConsoleUtility.AnalyzeAndExportResults(xmlReaderUtility, folderNames, ".csv");
         ConsoleUtility.WriteSpacedLine("Analysis Complete!");
     });
 

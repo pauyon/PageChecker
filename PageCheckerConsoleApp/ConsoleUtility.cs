@@ -131,12 +131,13 @@ public static class ConsoleUtility
     /// </summary>
     /// <param name="xmlReaderUtility">Tool for reading spreadsheet data.</param>
     /// <param name="folderNames">List of folders to analyze.</param>
-    public static void AnalyzeAndExportResults(IReaderUtility xmlReaderUtility, List<string> folderNames)
+    /// <param name="fileExtension">Extension of files to analyze.</param>
+    public static void AnalyzeAndExportResults(IReaderUtility xmlReaderUtility, List<string> folderNames, string fileExtension)
     {
         foreach (string folderName in folderNames)
         {
             var fullFolderPath = Path.Combine(xmlReaderUtility.WorkspaceDirectory.FullName, folderName);
-            var files = GetFolderFiles(fullFolderPath, ".xlsx");
+            var files = GetFolderFiles(fullFolderPath, fileExtension);
 
             if (files == null || files.Count == 0)
             {
