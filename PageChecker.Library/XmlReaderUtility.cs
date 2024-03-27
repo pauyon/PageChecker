@@ -4,14 +4,12 @@ using System.Text.RegularExpressions;
 
 namespace PageChecker.Library;
 
-public static class XmlReaderUtility
+public class XmlReaderUtility : ReaderBase, IReaderUtility
 {
-    public static DirectoryInfo RootDirectory { get; private set; }
-    public static XLWorkbook MarketWorkbook { get; internal set; } = new XLWorkbook();
-    public static XLWorkbook SalesWorkbook { get; internal set; } = new XLWorkbook();
+    public XLWorkbook MarketWorkbook { get; internal set; } = new XLWorkbook();
+    public XLWorkbook SalesWorkbook { get; internal set; } = new XLWorkbook();
 
-
-    public static IXLWorksheet GetMarketWorksheet(int index)
+    public IXLWorksheet OpenMarketSheet(int index)
     {
         if (index == 0)
         {
@@ -21,7 +19,7 @@ public static class XmlReaderUtility
         return MarketWorkbook.Worksheets.Worksheet(index);
     }
 
-    public static IXLWorksheet GetSalesWorksheet(int index)
+    public IXLWorksheet OpenSalesWorksheet(int index)
     {
         if (index == 0)
         {
@@ -31,11 +29,11 @@ public static class XmlReaderUtility
         return SalesWorkbook.Worksheets.Worksheet(index);
     }
 
-    public static List<Market> GetMarketWorksheetData()
+    public List<Market> GetMarketSheetData()
     {
         var marketData = new List<Market>();
 
-        var worksheet = GetMarketWorksheet(1);
+        var worksheet = OpenMarketSheet(1);
 
         var rows = worksheet.RangeUsed().RowsUsed().Skip(2); // Skip header row
 
@@ -74,11 +72,11 @@ public static class XmlReaderUtility
         return marketData;
     }
 
-    public static List<SalesRun> GetSalesWorksheetData()
+    public List<SalesRun> GetSalesSheetData()
     {
         var salesData = new List<SalesRun>();
 
-        var worksheet = GetSalesWorksheet(1);
+        var worksheet = OpenSalesWorksheet(1);
 
         var rows = worksheet.RangeUsed().RowsUsed().Skip(1); // Skip header row
 
@@ -106,7 +104,7 @@ public static class XmlReaderUtility
         return salesData;
     }
 
-    public static List<Market> CompareSheets(List<Market> marketSheetData, List<SalesRun> salesSheetData)
+    public List<Market> CompareSheetsData(List<Market> marketSheetData, List<SalesRun> salesSheetData)
     {
         foreach(var salesRow in salesSheetData)
         {
@@ -129,39 +127,33 @@ public static class XmlReaderUtility
         return marketSheetData;
     }
 
-    public static double GetPageSizeNumericValue(string pageDescription)
+    public void OpenSalesSheet(string filename)
     {
-        if (string.IsNullOrEmpty(pageDescription))
-        {
-            return 0;
-        }
+        var filepath = Path.Combine(RootDirectory.FullName, filename);
 
-        if (pageDescription.ToLower().Contains("full page"))
-        {
-            return 1;
-        }
-
-        if (pageDescription.ToLower().Contains("1/2 page"))
-        {
-            return 0.5;
-        }
-
-        return 0;
+        SalesWorkbook = new XLWorkbook(filepath);
     }
 
-    public static void ExportResults(string folderPath)
+    public void OpenMarketSheet(string filename)
+    {
+        var filepath = Path.Combine(RootDirectory.FullName, filename);
+
+        MarketWorkbook = new XLWorkbook(filepath);
+    }
+
+    public void ExportResults(string folderPath)
     {
         var resultsFilePath = Path.Combine(folderPath, "Results.xlsx");
-        
+
         if (File.Exists(resultsFilePath))
         {
             File.Delete(resultsFilePath);
         }
 
-        var marketSheetData = GetMarketWorksheetData();
-        var salesSheetData = GetSalesWorksheetData();
+        var marketSheetData = GetMarketSheetData();
+        var salesSheetData = GetSalesSheetData();
 
-        var checkedMarketData = CompareSheets(marketSheetData, salesSheetData);
+        var checkedMarketData = CompareSheetsData(marketSheetData, salesSheetData);
 
         var workbook = new XLWorkbook();
         var ws = workbook.Worksheets.Add("Report");
@@ -198,7 +190,7 @@ public static class XmlReaderUtility
 
             ws.Range(rowNum, 1, 1, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
-            if (!item.PassedCheck) 
+            if (!item.PassedCheck)
             {
                 ws.Range(rowNum, 1, rowNum, 10).Style.Fill.SetBackgroundColor(XLColor.Yellow);
             }
@@ -212,30 +204,5 @@ public static class XmlReaderUtility
         ws.Columns().AdjustToContents();
 
         workbook.SaveAs(resultsFilePath);
-    }
-
-    public static void SetRootDirectoryPath(string directoryPath)
-    {
-        RootDirectory = new DirectoryInfo(directoryPath);
-    }
-
-    public static List<string> GetRootDirectoryFolders()
-    {
-        var folders = RootDirectory.GetDirectories().Select(x => x.Name).ToList();
-        return folders;
-    }
-
-    public static void OpenSalesSheet(string filename)
-    {
-        var filepath = Path.Combine(RootDirectory.FullName, filename);
-
-        SalesWorkbook = new XLWorkbook(filepath);
-    }
-
-    public static void OpenMarketSheet(string filename)
-    {
-        var filepath = Path.Combine(RootDirectory.FullName, filename);
-
-        MarketWorkbook = new XLWorkbook(filepath);
     }
 }

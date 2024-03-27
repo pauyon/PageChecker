@@ -14,17 +14,19 @@ if (!Utility.AreFilesReady())
     return;
 }
 
-XmlReaderUtility.SetRootDirectoryPath(Utility.GetWorkspaceFolderPath().EscapeMarkup());
+var xmlReaderUtility = new XmlReaderUtility();
 
-if (XmlReaderUtility.GetRootDirectoryFolders().Count() == 0)
+xmlReaderUtility.SetRootDirectoryPath(Utility.GetWorkspaceFolderPath().EscapeMarkup());
+
+if (xmlReaderUtility.GetRootDirectoryFolders().Count() == 0)
 {
     Utility.WriteSpacedLine($"There were no folders in workspace. Closing application.");
     return;
 }
 
-Utility.WriteSpacedLine($"Workspace path: {XmlReaderUtility.RootDirectory.FullName}");
+Utility.WriteSpacedLine($"Workspace path: {xmlReaderUtility.RootDirectory.FullName}");
 
-var foldersToAnalyze = Utility.GetFoldersToAnalyze();
+var foldersToAnalyze = Utility.GetFoldersToAnalyze(xmlReaderUtility);
 
 if (foldersToAnalyze.Count == 0)
 {
@@ -38,7 +40,7 @@ AnsiConsole.Status()
     .Start("Analyzing files...", ctx =>
     {
         AnsiConsole.WriteLine();
-        Utility.AnalyzeFolders(foldersToAnalyze);
+        Utility.AnalyzeFolders(xmlReaderUtility, foldersToAnalyze);
         Utility.WriteSpacedLine("Analysis Complete!");
     });
 

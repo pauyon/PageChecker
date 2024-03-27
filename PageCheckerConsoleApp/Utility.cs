@@ -66,9 +66,9 @@ public static class Utility
         return Path.Combine(rootPath, folderName);
     }
 
-    public static List<string> GetFoldersToAnalyze()
+    public static List<string> GetFoldersToAnalyze(XmlReaderUtility xmlReaderUtility)
     {
-        List<string> foldersToAnalyze = XmlReaderUtility.GetRootDirectoryFolders();
+        List<string> foldersToAnalyze = xmlReaderUtility.GetRootDirectoryFolders();
 
         if (!AnsiConsole.Confirm($"[green]{foldersToAnalyze.Count}[/] folders were found in workspace. Run analyzer on all files?"))
         {
@@ -81,7 +81,7 @@ public static class Utility
                 .InstructionsText(
                     "[grey](Press [blue]<space>[/] to toggle a folder, " +
                     "[green]<enter>[/] to accept)[/]")
-                .AddChoices(XmlReaderUtility.GetRootDirectoryFolders()));
+                .AddChoices(xmlReaderUtility.GetRootDirectoryFolders()));
         }
 
         return foldersToAnalyze;
@@ -96,11 +96,11 @@ public static class Utility
         return files;
     }
 
-    public static void AnalyzeFolders(List<string> folders)
+    public static void AnalyzeFolders(XmlReaderUtility xmlReaderUtility, List<string> folders)
     {
         foreach (string folder in folders)
         {
-            var folderPath = Path.Combine(XmlReaderUtility.RootDirectory.FullName, folder);
+            var folderPath = Path.Combine(xmlReaderUtility.RootDirectory.FullName, folder);
             var files = GetFolderFiles(folderPath);
 
             if (files == null || files.Count == 0)
@@ -118,10 +118,10 @@ public static class Utility
             var salesSheet = files.First(x => x.ToLower().Contains("salessheet") || x.ToLower().Contains("sales sheet"));
             var marketSheet = files.First(x => !x.ToLower().Contains("salessheet") || !x.ToLower().Contains("sales sheet"));
 
-            XmlReaderUtility.OpenSalesSheet(Path.Combine(folderPath, salesSheet));
-            XmlReaderUtility.OpenMarketSheet(Path.Combine(folderPath, marketSheet));
+            xmlReaderUtility.OpenSalesSheet(Path.Combine(folderPath, salesSheet));
+            xmlReaderUtility.OpenMarketSheet(Path.Combine(folderPath, marketSheet));
 
-            XmlReaderUtility.ExportResults(folderPath);
+            xmlReaderUtility.ExportResults(folderPath);
             AnsiConsole.MarkupLine($"Folder [green]{folder}[/] analyzed successfully.");
         }
     }
