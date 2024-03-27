@@ -184,4 +184,24 @@ public static class ConsoleUtility
         AnsiConsole.MarkupLine(text);
         AnsiConsole.WriteLine();
     }
+
+    /// <summary>
+    /// Write title of app to console.
+    /// </summary>
+    /// <param name="title"></param>
+    public static void ShowAppTitle(string title)
+    {
+        AnsiConsole.Write(
+            new FigletText("------------")
+                .Centered()
+                .Color(Color.Green));
+        AnsiConsole.Write(
+            new FigletText(title)
+                .Centered()
+                .Color(Color.Green));
+        AnsiConsole.Write(
+            new FigletText("------------")
+                .Centered()
+                .Color(Color.Green));
+    }
 }
