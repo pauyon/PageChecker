@@ -3,10 +3,8 @@ using PageChecker.ConsoleApp;
 using Spectre.Console;
 
 // Display app title
-AnsiConsole.Write(
-    new FigletText("Page Checker")
-        .Centered()
-        .Color(Color.Green));
+Utility.ShowAppTitle("Page Checker");
+Utility.ShowInstructions();
 
 // App instructions
 ConsoleUtility.ShowChecklist();
@@ -20,10 +18,29 @@ IFileReaderUtility fileReaderUtility = new CsvReaderUtility();
 var workspaceFolderPath = ConsoleUtility.WorkspaceFolderPrompt().EscapeMarkup();
 fileReaderUtility.SetWorkspaceDirectoryPath(workspaceFolderPath);
 
-// Check workspace folder structure
-if (!fileReaderUtility.GetWorkspaceFolders().Any())
+var workspacePath = Utility.GetWorkspaceFolderPathPrompt();
+
+if (string.IsNullOrEmpty(workspacePath))
 {
-    ConsoleUtility.WriteSpacedLine($"There were no folders in workspace. Closing application.");
+    Utility.WriteSpacedLine($"There were no folders in workspace. Closing application.");
+    return;
+}
+
+XmlReaderUtility.SetRootDirectoryPath(workspacePath);
+
+if (XmlReaderUtility.GetRootDirectoryFolders().Count == 0)
+{
+    Utility.WriteSpacedLine($"There were no folders in workspace. Closing application.");
+    return;
+}
+
+Utility.WriteSpacedLine($"Workspace path: {XmlReaderUtility.RootDirectory.FullName}");
+
+var foldersToAnalyze = Utility.GetFoldersToAnalyzePrompt();
+
+if (foldersToAnalyze.Count == 0)
+{
+    Utility.WriteSpacedLine($"There were no folders in workspace. Closing application.");
     return;
 }
 
@@ -35,9 +52,10 @@ var folderNames = ConsoleUtility.SelectWorkspaceFoldersPrompt(fileReaderUtility)
 AnsiConsole.Status()
     .Spinner(Spinner.Known.Star)
     .SpinnerStyle(Style.Parse("green bold"))
-    .Start("Analyzing files...", ctx =>
+    .Start("Processing folders...", ctx =>
     {
         AnsiConsole.WriteLine();
+
         ConsoleUtility.AnalyzeAndExportResults(fileReaderUtility, folderNames, ".csv");
         ConsoleUtility.WriteSpacedLine("Analysis Complete!");
     });
