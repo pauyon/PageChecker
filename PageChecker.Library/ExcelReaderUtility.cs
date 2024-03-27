@@ -3,7 +3,7 @@ using PageChecker.Domain.Models;
 
 namespace PageChecker.Library;
 
-public class ExcelReaderUtility : ReaderBase, IReaderUtility
+public class ExcelReaderUtility : FileReaderBase, IFileReaderUtility
 {
     public XLWorkbook MarketWorkbook { get; internal set; } = new XLWorkbook();
     public XLWorkbook SalesRunWorkbook { get; internal set; } = new XLWorkbook();

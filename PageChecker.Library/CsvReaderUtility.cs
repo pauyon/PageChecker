@@ -3,7 +3,7 @@ using PageChecker.Domain.Models;
 
 namespace PageChecker.Library
 {
-    public class CsvReaderUtility : ReaderBase, IReaderUtility
+    public class CsvReaderUtility : FileReaderBase, IFileReaderUtility
     {
         public FileInfo MarketClientSheet { get; set; } = new FileInfo("./");
         public FileInfo SalesRunSheet { get; set; } = new FileInfo("./");

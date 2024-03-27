@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace PageChecker.Library
 {
-    public class ReaderBase : IReaderBase
+    public class FileReaderBase : IFileReaderBase
     {
         public DirectoryInfo WorkspaceDirectory { get; set; } = new DirectoryInfo(".");
         public List<string> MarketClientSheetHeaders { get; set; } = new();

@@ -2,7 +2,7 @@
 
 namespace PageChecker.Library
 {
-    public interface IReaderBase
+    public interface IFileReaderBase
     {
         public DirectoryInfo WorkspaceDirectory { get; set; }
         public List<string> MarketClientSheetHeaders { get; set; }

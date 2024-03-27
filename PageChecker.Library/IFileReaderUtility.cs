@@ -2,7 +2,7 @@
 
 namespace PageChecker.Library
 {
-    public interface IReaderUtility : IReaderBase
+    public interface IFileReaderUtility : IFileReaderBase
     {
         List<MarketClient> GetMarketClientSheetData();
         List<SalesRun> GetSalesSheetData();

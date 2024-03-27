@@ -15,22 +15,22 @@ ConsoleUtility.ShowChecklist();
 if (!ConsoleUtility.CheckListCompletePrompt()) return;
 
 // Get workspace folder path
-IReaderUtility xmlReaderUtility = new CsvReaderUtility();
+IFileReaderUtility fileReaderUtility = new CsvReaderUtility();
 
 var workspaceFolderPath = ConsoleUtility.WorkspaceFolderPrompt().EscapeMarkup();
-xmlReaderUtility.SetWorkspaceDirectoryPath(workspaceFolderPath);
+fileReaderUtility.SetWorkspaceDirectoryPath(workspaceFolderPath);
 
 // Check workspace folder structure
-if (!xmlReaderUtility.GetWorkspaceFolders().Any())
+if (!fileReaderUtility.GetWorkspaceFolders().Any())
 {
     ConsoleUtility.WriteSpacedLine($"There were no folders in workspace. Closing application.");
     return;
 }
 
-ConsoleUtility.WriteSpacedLine($"Workspace path: {xmlReaderUtility.WorkspaceDirectory.FullName}");
+ConsoleUtility.WriteSpacedLine($"Workspace path: {fileReaderUtility.WorkspaceDirectory.FullName}");
 
 // Get list of folder to run analysis on
-var folderNames = ConsoleUtility.SelectWorkspaceFoldersPrompt(xmlReaderUtility);
+var folderNames = ConsoleUtility.SelectWorkspaceFoldersPrompt(fileReaderUtility);
 
 AnsiConsole.Status()
     .Spinner(Spinner.Known.Star)
@@ -38,7 +38,7 @@ AnsiConsole.Status()
     .Start("Analyzing files...", ctx =>
     {
         AnsiConsole.WriteLine();
-        ConsoleUtility.AnalyzeAndExportResults(xmlReaderUtility, folderNames, ".csv");
+        ConsoleUtility.AnalyzeAndExportResults(fileReaderUtility, folderNames, ".csv");
         ConsoleUtility.WriteSpacedLine("Analysis Complete!");
     });
 

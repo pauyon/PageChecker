@@ -92,7 +92,7 @@ public static class ConsoleUtility
     /// </summary>
     /// <param name="xmlReaderUtility">Tool for reading spreadsheets.</param>
     /// <returns>List of folder names to analyze.</returns>
-    public static List<string> SelectWorkspaceFoldersPrompt(IReaderUtility xmlReaderUtility)
+    public static List<string> SelectWorkspaceFoldersPrompt(IFileReaderUtility xmlReaderUtility)
     {
         List<string> foldersToAnalyze = xmlReaderUtility.GetWorkspaceFolders();
 
@@ -132,7 +132,7 @@ public static class ConsoleUtility
     /// <param name="xmlReaderUtility">Tool for reading spreadsheet data.</param>
     /// <param name="folderNames">List of folders to analyze.</param>
     /// <param name="fileExtension">Extension of files to analyze.</param>
-    public static void AnalyzeAndExportResults(IReaderUtility xmlReaderUtility, List<string> folderNames, string fileExtension)
+    public static void AnalyzeAndExportResults(IFileReaderUtility xmlReaderUtility, List<string> folderNames, string fileExtension)
     {
         foreach (string folderName in folderNames)
         {
@@ -141,13 +141,13 @@ public static class ConsoleUtility
 
             if (files == null || files.Count == 0)
             {
-                AnsiConsole.MarkupLine($"Folder [green]{folderName}[/] skipped. No spreadsheets found.");
+                AnsiConsole.MarkupLine($"Market folder [green]{folderName}[/] skipped. No spreadsheets found.");
                 continue;
             }
 
             if (files.Count > 2)
             {
-                AnsiConsole.MarkupLine($"Folder [green]{folderName}[/] skipped. Too many spreadsheets found.");
+                AnsiConsole.MarkupLine($"Market folder [green]{folderName}[/] skipped. Too many spreadsheets found.");
                 continue;
             }
 
@@ -155,7 +155,7 @@ public static class ConsoleUtility
 
             if (salesRunSheetFilename == null)
             {
-                AnsiConsole.MarkupLine($"Folder [green]{folderName}[/] skipped. Salesrun sheet is missing.");
+                AnsiConsole.MarkupLine($"Market folder [green]{folderName}[/] skipped. Salesrun sheet is missing.");
                 continue;
             }
             else
