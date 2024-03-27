@@ -6,7 +6,15 @@ namespace PageChecker.Library
     {
         public void AnalyzeAndExportResults(string folderPath, string marketClientSheetFilename, string salesSheetFilename)
         {
-            throw new NotImplementedException();
+            var resultsExportPath = Path.Combine(folderPath, "Results.xlsx");
+
+            RemoveExistingResultsExcel(resultsExportPath);
+
+            var marketClientSheetData = GetMarketClientSheetData();
+            var salesRunSheetData = GetSalesSheetData();
+            var checkedMarketData = CompareSheetsData(marketClientSheetData, salesRunSheetData);
+
+            GenerateResultsExcel(checkedMarketData, resultsExportPath);
         }
 
         public List<MarketClient> GetMarketClientSheetData()
