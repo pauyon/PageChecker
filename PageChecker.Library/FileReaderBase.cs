@@ -81,16 +81,17 @@ namespace PageChecker.Library
         {
             foreach (var salesRow in salesRunSheetData)
             {
+                var salesRunClientName = Regex.Replace(salesRow.Client.ToLower(), @"\([a-zA-Z0-9 .-]+\)", "").Replace(" ", "").Trim();
+
                 foreach (var marketRow in marketClientSheetData)
                 {
-                    var salesClient = Regex.Replace(salesRow.Client.ToLower(), @"\([a-zA-Z0-9 .-]+\)", "").Replace(" ", "").Trim();
-                    var marketClient = marketRow.Customer.ToLower().Replace(" ", "");
+                    var marketClientName = marketRow.Customer.ToLower().Replace(" ", "").Trim();
 
-                    var salesPageSize = GetPageSizeNumericValue(salesRow.Description);
-                    var marketPageSize = marketRow.Size;
+                    var salesClientPageSize = GetPageSizeNumericValue(salesRow.Description);
+                    var marketClientPageSize = marketRow.Size;
 
-                    if (salesClient.Contains(marketClient) &&
-                        salesPageSize == marketPageSize)
+                    if (salesRunClientName.Contains(marketClientName) &&
+                        salesClientPageSize == marketClientPageSize)
                     {
                         marketRow.PassedCheck = true;
                     }
