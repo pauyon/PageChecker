@@ -14,6 +14,8 @@ public class ExcelReaderUtility : FileReaderBase, IFileReaderUtility
         var worksheet = MarketWorkbook.Worksheets.Worksheet(1);
 
         MarketClientSheetHeaders = GetWorksheetHeaders(worksheet, skip: 1, take: 1);
+        MarketClientSheetHeaders = RenameAccountingColumn(MarketClientSheetHeaders);
+
         var rows = worksheet.RangeUsed().RowsUsed().Skip(2); // Skip header row
 
         foreach (var row in rows)
@@ -23,7 +25,7 @@ public class ExcelReaderUtility : FileReaderBase, IFileReaderUtility
                 break;
             }
 
-            var customer = row.Cell(MarketClientSheetHeaders.IndexOf("Customer") + 1).Value.ToString();
+            var customerName = row.Cell(MarketClientSheetHeaders.IndexOf("Customer") + 1).Value.ToString();
             var size = row.Cell(MarketClientSheetHeaders.IndexOf("Size") + 1).Value.ToString();
             var rep = row.Cell(MarketClientSheetHeaders.IndexOf("Rep") + 1).Value.ToString();
             var categories = row.Cell(MarketClientSheetHeaders.IndexOf("Categories") + 1).Value.ToString();
@@ -31,10 +33,11 @@ public class ExcelReaderUtility : FileReaderBase, IFileReaderUtility
             var artwork = row.Cell(MarketClientSheetHeaders.IndexOf("Artwork") + 1).Value.ToString();
             var notes = row.Cell(MarketClientSheetHeaders.IndexOf("Notes") + 1).Value.ToString();
             var placement = row.Cell(MarketClientSheetHeaders.IndexOf("Placement") + 1).Value.ToString();
+            var accountingCustomerName = row.Cell(MarketClientSheetHeaders.IndexOf("AccountingCustomerName") + 1).Value.ToString();
 
             marketData.Add(new MarketClient
             {
-                Customer = customer,
+                CustomerName = customerName,
                 Size = Convert.ToDouble(size),
                 Rep = rep,
                 Categories = categories,
@@ -42,6 +45,7 @@ public class ExcelReaderUtility : FileReaderBase, IFileReaderUtility
                 Artwork = artwork,
                 Notes = notes,
                 Placement = placement,
+                AccountingCustomerName = accountingCustomerName,
             });
         }
 
@@ -59,7 +63,7 @@ public class ExcelReaderUtility : FileReaderBase, IFileReaderUtility
 
         foreach (var row in rows)
         {
-            var client = row.Cell(SalesSheetHeaders.IndexOf("Client") + 1).Value.ToString();
+            var clientName = row.Cell(SalesSheetHeaders.IndexOf("Client") + 1).Value.ToString();
             var product = row.Cell(SalesSheetHeaders.IndexOf("Product") + 1).Value.ToString();
             var description = row.Cell(SalesSheetHeaders.IndexOf("Description") + 1).Value.ToString();
             var salesRep = row.Cell(SalesSheetHeaders.IndexOf("Sales Rep") + 1).Value.ToString();
@@ -69,7 +73,7 @@ public class ExcelReaderUtility : FileReaderBase, IFileReaderUtility
 
             salesData.Add(new SalesRun
             {
-                Client = client,
+                ClientName = clientName,
                 Product = product,
                 Description = description,
                 SalesRep = salesRep,

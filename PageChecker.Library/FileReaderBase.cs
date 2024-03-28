@@ -32,6 +32,11 @@ namespace PageChecker.Library
                 return 0.5;
             }
 
+            if (pageDescription.ToLower().Contains("two page"))
+            {
+                return 2;
+            }
+
             return 0;
         }
 
@@ -76,16 +81,17 @@ namespace PageChecker.Library
         {
             foreach (var salesRow in salesRunSheetData)
             {
+                var salesRunClientName = Regex.Replace(salesRow.ClientName.ToLower(), @"\([a-zA-Z0-9 .-]+\)", "").Replace(" ", "").Trim();
+
                 foreach (var marketRow in marketClientSheetData)
                 {
-                    var salesClient = Regex.Replace(salesRow.Client.ToLower(), @"\([a-zA-Z0-9 .-]+\)", "").Replace(" ", "");
-                    var marketClient = marketRow.Customer.ToLower().Replace(" ", "");
+                    var marketClientName = marketRow.AccurateCustomerName.ToLower().Replace(" ", "").Trim();
 
-                    var salesPageSize = GetPageSizeNumericValue(salesRow.Description);
-                    var marketPageSize = marketRow.Size;
+                    var salesClientPageSize = GetPageSizeNumericValue(salesRow.Description);
+                    var marketClientPageSize = marketRow.Size;
 
-                    if (salesClient.Contains(marketClient) &&
-                        salesPageSize == marketPageSize)
+                    if (salesRunClientName.Contains(marketClientName) &&
+                        salesClientPageSize == marketClientPageSize)
                     {
                         marketRow.PassedCheck = true;
                     }
@@ -105,44 +111,63 @@ namespace PageChecker.Library
             var workbook = new XLWorkbook();
             var ws = workbook.Worksheets.Add("Results");
 
-            ws.Range(1, 1, 1, 10).Style.Fill.SetBackgroundColor(XLColor.LightBlue);
+            var rowLength = 7;
+
+            ws.Range(1, 1, 1, rowLength).Style.Fill.SetBackgroundColor(XLColor.LightBlue);
 
             var rowNum = 1;
 
             ws.Cell(rowNum, 1).Value = "PassedCheck";
             ws.Cell(rowNum, 2).Value = "Customer";
-            ws.Cell(rowNum, 3).Value = "Size";
-            ws.Cell(rowNum, 4).Value = "Rep";
-            ws.Cell(rowNum, 5).Value = "Categories";
-            ws.Cell(rowNum, 6).Value = "Contract Status";
+            ws.Cell(rowNum, 3).Value = "Accounting Customer Name";
+            ws.Cell(rowNum, 4).Value = "Size";
+            ws.Cell(rowNum, 5).Value = "Rep";
+            ws.Cell(rowNum, 6).Value = "Categories";
+            ws.Cell(rowNum, 7).Value = "Contract Status";
 
             foreach (var item in checkedMarketData)
             {
                 rowNum++;
 
                 ws.Cell(rowNum, 1).Value = item.PassedCheck ? "X" : "";
-                ws.Cell(rowNum, 2).Value = item.Customer;
-                ws.Cell(rowNum, 3).Value = item.Size;
-                ws.Cell(rowNum, 4).Value = item.Rep;
-                ws.Cell(rowNum, 5).Value = item.Categories;
-                ws.Cell(rowNum, 6).Value = item.ContractStatus;
+                ws.Cell(rowNum, 2).Value = item.CustomerName;
+                ws.Cell(rowNum, 3).Value = item.AccountingCustomerName;
+                ws.Cell(rowNum, 4).Value = item.Size;
+                ws.Cell(rowNum, 5).Value = item.Rep;
+                ws.Cell(rowNum, 6).Value = item.Categories;
+                ws.Cell(rowNum, 7).Value = item.ContractStatus;
 
                 ws.Range(rowNum, 1, 1, 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                 if (!item.PassedCheck)
                 {
-                    ws.Range(rowNum, 1, rowNum, 10).Style.Fill.SetBackgroundColor(XLColor.Yellow);
+                    ws.Range(rowNum, 1, rowNum, rowLength).Style.Fill.SetBackgroundColor(XLColor.Yellow);
                 }
 
                 if (item.ContractStatus.ToLower() == "pay per lead")
                 {
-                    ws.Range(rowNum, 1, rowNum, 10).Style.Fill.SetBackgroundColor(XLColor.LightPastelPurple);
+                    ws.Range(rowNum, 1, rowNum, rowLength).Style.Fill.SetBackgroundColor(XLColor.LightPastelPurple);
                 }
             }
 
             ws.Columns().AdjustToContents();
 
             workbook.SaveAs(resultsExportPath);
+        }
+
+        /// <summary>
+        /// Renames the accounting use only column for ease of use.
+        /// </summary>
+        /// <param name="headers"></param>
+        /// <returns></returns>
+        public List<string> RenameAccountingColumn(List<string> headers)
+        {
+            var accountingUseOnlyColumn = headers.First(x => x.ToLower().Contains("accounting use only"));
+            var indexOfAccountingUseOnlyColumn = headers.IndexOf(accountingUseOnlyColumn);
+
+            headers[indexOfAccountingUseOnlyColumn] = "AccountingCustomerName";
+
+            return headers;
         }
     }
 }

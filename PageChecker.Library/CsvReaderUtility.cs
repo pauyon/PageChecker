@@ -31,6 +31,7 @@ namespace PageChecker.Library
             var data = ReadCsvFileData(MarketClientSheet.FullName, false);
 
             MarketClientSheetHeaders = data.Skip(1).First().Split(";").ToList();
+            MarketClientSheetHeaders = RenameAccountingColumn(MarketClientSheetHeaders);
 
             foreach (var line in data.Skip(2).ToList())
             {
@@ -44,10 +45,11 @@ namespace PageChecker.Library
                 var artwork = columns[MarketClientSheetHeaders.IndexOf("Artwork")];
                 var notes = columns[MarketClientSheetHeaders.IndexOf("Notes")];
                 var placement = columns[MarketClientSheetHeaders.IndexOf("Placement")];
+                var accountingCustomerName = columns[MarketClientSheetHeaders.IndexOf("AccountingCustomerName")];
 
                 marketData.Add(new MarketClient
                 {
-                    Customer = customer,
+                    CustomerName = customer,
                     Size = Convert.ToDouble(size),
                     Rep = rep,
                     Categories = categories,
@@ -55,6 +57,7 @@ namespace PageChecker.Library
                     Artwork = artwork,
                     Notes = notes,
                     Placement = placement,
+                    AccountingCustomerName = accountingCustomerName
                 });
             }
 
@@ -125,7 +128,7 @@ namespace PageChecker.Library
 
                 salesRunData.Add(new SalesRun
                 {
-                    Client = client,
+                    ClientName = client,
                     Product = product,
                     Description = description,
                     SalesRep = salesRep,
