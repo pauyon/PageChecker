@@ -32,6 +32,11 @@ namespace PageChecker.Library
                 return 0.5;
             }
 
+            if (pageDescription.ToLower().Contains("two page"))
+            {
+                return 2;
+            }
+
             return 0;
         }
 
@@ -78,7 +83,7 @@ namespace PageChecker.Library
             {
                 foreach (var marketRow in marketClientSheetData)
                 {
-                    var salesClient = Regex.Replace(salesRow.Client.ToLower(), @"\([a-zA-Z0-9 .-]+\)", "").Replace(" ", "");
+                    var salesClient = Regex.Replace(salesRow.Client.ToLower(), @"\([a-zA-Z0-9 .-]+\)", "").Replace(" ", "").Trim();
                     var marketClient = marketRow.Customer.ToLower().Replace(" ", "");
 
                     var salesPageSize = GetPageSizeNumericValue(salesRow.Description);
