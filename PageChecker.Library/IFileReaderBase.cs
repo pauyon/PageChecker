@@ -4,15 +4,16 @@ namespace PageChecker.Library
 {
     public interface IFileReaderBase
     {
-        public DirectoryInfo WorkspaceDirectory { get; set; }
-        public List<string> MarketClientSheetHeaders { get; set; }
-        public List<string> SalesSheetHeaders { get; set; }
+        DirectoryInfo WorkspaceDirectory { get; set; }
+        List<string> MarketClientSheetHeaders { get; set; }
+        List<string> SalesSheetHeaders { get; set; }
 
-        public double GetPageSizeNumericValue(string pageDescription);
-        public void SetWorkspaceDirectoryPath(string directoryPath);
-        public List<string> GetWorkspaceFolders();
-        public void RemoveExistingResultsExcel(string resultsSheetFilePath);
-        public List<MarketClient> CompareSheetsData(List<MarketClient> marketClientSheetData, List<SalesRun> salesRunSheetData);
-        public void GenerateResultsExcel(List<MarketClient> checkedMarketData, string resultsExportPath);
+        double GetPageSizeNumericValue(string pageDescription);
+        void SetWorkspaceDirectoryPath(string directoryPath);
+        List<string> GetWorkspaceFolders();
+        void RemoveExistingResultsExcel(string resultsSheetFilePath);
+        List<MarketClient> CompareSheetsData(List<MarketClient> marketClientSheetData, List<SalesRun> salesRunSheetData);
+        void GenerateResultsExcel(List<MarketClient> checkedMarketData, string resultsExportPath);
+        List<string> RenameAccountingColumn(List<string> headers);
     }
 }
