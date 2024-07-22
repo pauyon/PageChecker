@@ -208,6 +208,10 @@ public class ConsoleUtility
     /// <param name="title"></param>
     public void ShowAppTitle(string title)
     {
+        System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+        System.Diagnostics.FileVersionInfo fvi = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
+        string version = "v." + fvi.FileVersion ?? string.Empty;
+
         _logger.LogInformation("Showing title");
         AnsiConsole.Write(
             new FigletText("------------")
@@ -215,6 +219,10 @@ public class ConsoleUtility
                 .Color(Color.Green));
         AnsiConsole.Write(
             new FigletText(title)
+                .Centered()
+                .Color(Color.Green));
+        AnsiConsole.Write(
+            new FigletText(version)
                 .Centered()
                 .Color(Color.Green));
         AnsiConsole.Write(
