@@ -147,12 +147,19 @@ namespace PageChecker.Library
                 var data = ReadCsvFileData(SalesRunSheet.FullName, false);
 
                 SalesSheetHeaders = data.First().Split(";").ToList();
+                var expectedHeaders = new List<string> { "Company", "Name", "Product", "Description", "Sales Rep", "Net", "Barter" }; 
+
+                if (SalesSheetHeaders.Intersect(expectedHeaders).Count() != expectedHeaders.Count())
+                {
+                    throw new Exception($"The sales sheet columns don't match expected column headers: '{string.Join(", ", expectedHeaders)}'");
+                }
 
                 foreach (var line in data.Skip(1).ToList())
                 {
                     var columns = line.Split(';').ToList();
 
-                    var client = columns[SalesSheetHeaders.IndexOf("Client")];
+                    var company = columns[SalesSheetHeaders.IndexOf("Company")];
+                    var name = columns[SalesSheetHeaders.IndexOf("Name")];
                     var product = columns[SalesSheetHeaders.IndexOf("Product")];
                     var description = columns[SalesSheetHeaders.IndexOf("Description")];
                     var salesRep = columns[SalesSheetHeaders.IndexOf("Sales Rep")];
@@ -162,7 +169,8 @@ namespace PageChecker.Library
 
                     salesRunData.Add(new SalesRun
                     {
-                        ClientName = client,
+                        Company = company,
+                        Name = company,
                         Product = product,
                         Description = description,
                         SalesRep = salesRep,

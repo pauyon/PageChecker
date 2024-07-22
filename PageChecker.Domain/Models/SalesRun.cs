@@ -1,7 +1,8 @@
 ﻿namespace PageChecker.Domain.Models;
 public class SalesRun
 {
-    public string ClientName { get; set; }
+    public string Company { get; set; }
+    public string Name { get; set; }
     public string Product { get; set; }
     public string Description { get; set; }
     public string SalesRep { get; set; }

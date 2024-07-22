@@ -95,7 +95,7 @@ namespace PageChecker.Library
                 _logger.LogInformation("Comparing sales and market sheet data...");
                 foreach (var salesRow in salesRunSheetData)
                 {
-                    var salesRunClientName = Regex.Replace(salesRow.ClientName.ToLower(), @"\([a-zA-Z0-9 .-]+\)", "").Replace(" ", "").Trim();
+                    var salesRunClientName = Regex.Replace(salesRow.Company.ToLower(), @"\([a-zA-Z0-9 .-]+\)", "").Replace(" ", "").Trim();
 
                     foreach (var marketRow in marketClientSheetData)
                     {

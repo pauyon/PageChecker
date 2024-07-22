@@ -97,7 +97,7 @@ public class ExcelReaderUtility : FileReaderBase, IFileReaderUtility
 
                 salesData.Add(new SalesRun
                 {
-                    ClientName = clientName,
+                    Company = clientName,
                     Product = product,
                     Description = description,
                     SalesRep = salesRep,
