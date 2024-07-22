@@ -6,7 +6,7 @@ using Microsoft.Extensions.Hosting;
 
 // Configure Serilog
 Log.Logger = new LoggerConfiguration()
-    .WriteTo.File("logs/myapp.txt", rollingInterval: RollingInterval.Day)
+    .WriteTo.File("logs/PageChecker.log", rollingInterval: RollingInterval.Day)
     .CreateLogger();
 
 var host = Host.CreateDefaultBuilder(args)
