@@ -1,15 +1,25 @@
-﻿using PageChecker.Library;
+﻿using Microsoft.Extensions.Logging;
+using PageChecker.Library;
 using Spectre.Console;
 
 namespace PageChecker.ConsoleApp;
 
-public static class ConsoleUtility
+public class ConsoleUtility
 {
+    private readonly ILogger _logger;
+
+    public ConsoleUtility(ILogger logger)
+    {
+        _logger = logger;
+    }
+
     /// <summary>
     /// Write instructions for folder structure to console.
     /// </summary>
-    public static void ShowChecklist()
+    public void ShowChecklist()
     {
+        _logger.LogInformation("Displaying checklist");
+
         AnsiConsole.WriteLine();
         AnsiConsole.MarkupLine("Before starting, ensure the following:");
         AnsiConsole.MarkupLine("======================================");
@@ -26,15 +36,17 @@ public static class ConsoleUtility
     /// Prompts user if the checklist has been complete.
     /// </summary>
     /// <returns>Bool value of true or false.</returns>
-    public static bool CheckListCompletePrompt()
+    public bool CheckListCompletePrompt()
     {
         if (!AnsiConsole.Confirm("Have you completed everything on the checklist?"))
         {
             AnsiConsole.WriteLine();
             AnsiConsole.MarkupLine("The application will now close. Run again once the files are setup.");
+            _logger.LogInformation("User has NOT completed checklist completion. Closing app");
             return false;
         }
 
+        _logger.LogInformation("User has completed checklist.");
         return true;
     }
 
@@ -42,7 +54,7 @@ public static class ConsoleUtility
     /// Prompts user for a workspace folder path. Returns working directory path by default.
     /// </summary>
     /// <returns>Full path of workspace folder.</returns>
-    public static string WorkspacePathPrompt()
+    public string WorkspacePathPrompt()
     {
         string rootPath = "./";
 
@@ -59,7 +71,7 @@ public static class ConsoleUtility
     /// </summary>
     /// <param name="path">Path of workspace folder.</param>
     /// <returns>List of folder names of workspace folder path.</returns>
-    public static List<string> GetWorkspaceRootPathFolders(string path)
+    public List<string> GetWorkspaceRootPathFolders(string path)
     {
         var directory = new DirectoryInfo(path);
 
@@ -71,7 +83,7 @@ public static class ConsoleUtility
     /// Prompts user for the path of the workspace folder to work with.
     /// </summary>
     /// <returns>Full path of workspace folder.</returns>
-    public static string WorkspaceFolderPrompt()
+    public string WorkspaceFolderPrompt()
     {
         var rootPath = WorkspacePathPrompt();
         var folders = GetWorkspaceRootPathFolders(rootPath);
@@ -83,7 +95,10 @@ public static class ConsoleUtility
             .MoreChoicesText("[grey](Move up and down to reveal more files)[/]")
             .AddChoices(folders));
 
-        return Path.Combine(rootPath, folderName);
+        var workspacePath = Path.Combine(rootPath, folderName);
+        _logger.LogInformation($"Workspace path set to : {workspacePath}");
+
+        return workspacePath;
     }
 
     /// <summary>
@@ -92,7 +107,7 @@ public static class ConsoleUtility
     /// </summary>
     /// <param name="xmlReaderUtility">Tool for reading spreadsheets.</param>
     /// <returns>List of folder names to analyze.</returns>
-    public static List<string> SelectWorkspaceFoldersPrompt(IFileReaderUtility xmlReaderUtility)
+    public List<string> SelectWorkspaceFoldersPrompt(IFileReaderUtility xmlReaderUtility)
     {
         List<string> foldersToAnalyze = xmlReaderUtility.GetWorkspaceFolders();
 
@@ -110,6 +125,8 @@ public static class ConsoleUtility
                 .AddChoices(xmlReaderUtility.GetWorkspaceFolders()));
         }
 
+        _logger.LogInformation("Selected folders: " + string.Join(',', foldersToAnalyze));
+
         return foldersToAnalyze;
     }
 
@@ -119,7 +136,7 @@ public static class ConsoleUtility
     /// <param name="path">Folder path.</param>
     /// <param name="validExtension">File extension.</param>
     /// <returns></returns>
-    public static List<string> GetFolderFiles(string path, string validExtension)
+    public List<string> GetFolderFiles(string path, string validExtension)
     {
         var directory = new DirectoryInfo(path);
         var files = directory.GetFiles().Where(x => !x.Name.ToLower().Contains("results") && x.Extension == validExtension).Select(x => x.Name).ToList();
@@ -132,7 +149,7 @@ public static class ConsoleUtility
     /// <param name="xmlReaderUtility">Tool for reading spreadsheet data.</param>
     /// <param name="folderNames">List of folders to analyze.</param>
     /// <param name="fileExtension">Extension of files to analyze.</param>
-    public static void AnalyzeAndExportResults(IFileReaderUtility xmlReaderUtility, List<string> folderNames, string fileExtension)
+    public void AnalyzeAndExportResults(IFileReaderUtility xmlReaderUtility, List<string> folderNames, string fileExtension)
     {
         foreach (string folderName in folderNames)
         {
@@ -178,7 +195,7 @@ public static class ConsoleUtility
     /// Write text to console with a new line above and below text.
     /// </summary>
     /// <param name="text"></param>
-    public static void WriteSpacedLine(string text)
+    public void WriteSpacedLine(string text)
     {
         AnsiConsole.WriteLine();
         AnsiConsole.MarkupLine(text);
@@ -189,14 +206,23 @@ public static class ConsoleUtility
     /// Write title of app to console.
     /// </summary>
     /// <param name="title"></param>
-    public static void ShowAppTitle(string title)
+    public void ShowAppTitle(string title)
     {
+        System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+        System.Diagnostics.FileVersionInfo fvi = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
+        string version = "v." + fvi.FileVersion ?? string.Empty;
+
+        _logger.LogInformation("Showing title");
         AnsiConsole.Write(
             new FigletText("------------")
                 .Centered()
                 .Color(Color.Green));
         AnsiConsole.Write(
             new FigletText(title)
+                .Centered()
+                .Color(Color.Green));
+        AnsiConsole.Write(
+            new FigletText(version)
                 .Centered()
                 .Color(Color.Green));
         AnsiConsole.Write(

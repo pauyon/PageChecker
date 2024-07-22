@@ -1,42 +1,33 @@
 ﻿using PageChecker.Library;
 using PageChecker.ConsoleApp;
-using Spectre.Console;
+using Serilog;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
-// Display app title
-ConsoleUtility.ShowAppTitle("Page Checker");
+// Configure Serilog
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.File("logs/PageChecker.log", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
 
-// App instructions
-ConsoleUtility.ShowChecklist();
-
-// Check if user is ready
-if (!ConsoleUtility.CheckListCompletePrompt()) return;
-
-// Get workspace folder path
-IFileReaderUtility fileReaderUtility = new CsvReaderUtility();
-
-var workspaceFolderPath = ConsoleUtility.WorkspaceFolderPrompt().EscapeMarkup();
-fileReaderUtility.SetWorkspaceDirectoryPath(workspaceFolderPath);
-
-// Check workspace folder structure
-if (!fileReaderUtility.GetWorkspaceFolders().Any())
-{
-    ConsoleUtility.WriteSpacedLine($"There were no folders in workspace. Closing application.");
-    return;
-}
-
-ConsoleUtility.WriteSpacedLine($"Workspace path: {fileReaderUtility.WorkspaceDirectory.FullName}");
-
-// Get list of folder to run analysis on
-var folderNames = ConsoleUtility.SelectWorkspaceFoldersPrompt(fileReaderUtility);
-
-AnsiConsole.Status()
-    .Spinner(Spinner.Known.Star)
-    .SpinnerStyle(Style.Parse("green bold"))
-    .Start("Analyzing files...", ctx =>
+var host = Host.CreateDefaultBuilder(args)
+    .ConfigureServices((context, services) =>
     {
-        AnsiConsole.WriteLine();
-        ConsoleUtility.AnalyzeAndExportResults(fileReaderUtility, folderNames, ".csv");
-        ConsoleUtility.WriteSpacedLine("Analysis Complete!");
-    });
+        // Add Serilog to the logging pipeline
+        services.AddLogging(loggingBuilder =>
+            loggingBuilder.AddSerilog(dispose: true));
+
+        // Register the main application class
+        services.AddTransient<App>();
+        services.AddTransient<ConsoleUtility>();
+
+        // Register other classes that require logging
+        services.AddTransient<FileReaderBase>();
+    })
+    .UseSerilog() // Ensure Serilog is used as the logging provider
+    .Build();
+
+// Use the host to get the main application class and run it
+var app = host.Services.GetRequiredService<App>();
+app.Run();
 
 
