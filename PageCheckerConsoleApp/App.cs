@@ -15,7 +15,7 @@ public class App
 
     public void Run()
     {
-        _logger.LogInformation("Application started.");
+        _logger.LogInformation("PageChecker app started.");
         var consoleUtility = new ConsoleUtility(_logger);
 
         // Display app title
@@ -27,7 +27,7 @@ public class App
         // Check if user is ready
         if (!consoleUtility.CheckListCompletePrompt())
         {
-            _logger.LogInformation("User has not completed checklist. Closing app.");
+            _logger.LogWarning("User has not completed checklist. Closing app.");
             return;
         }
 
@@ -40,12 +40,15 @@ public class App
         // Check workspace folder structure
         if (!fileReaderUtility.GetWorkspaceFolders().Any())
         {
-            _logger.LogInformation($"There were no folders in workspace. Closing application.");
-            consoleUtility.WriteSpacedLine($"There were no folders in workspace. Closing application.");
+            var exitMessage = "There were no folders in workspace. Closing application.";
+            _logger.LogWarning(exitMessage);
+            consoleUtility.WriteSpacedLine(exitMessage);
             return;
         }
 
-        consoleUtility.WriteSpacedLine($"Workspace path: {fileReaderUtility.WorkspaceDirectory.FullName}");
+        var message = $"Workspace path: {fileReaderUtility.WorkspaceDirectory.FullName}";
+        _logger.LogDebug(message);
+        consoleUtility.WriteSpacedLine(message);
 
         // Get list of folder to run analysis on
         var folderNames = consoleUtility.SelectWorkspaceFoldersPrompt(fileReaderUtility);

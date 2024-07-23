@@ -158,12 +158,14 @@ public class ConsoleUtility
 
             if (files == null || files.Count == 0)
             {
+                _logger.LogWarning($"Market folder {folderName} skipped. No spreadsheets found.");
                 AnsiConsole.MarkupLine($"Market folder [green]{folderName}[/] skipped. No spreadsheets found.");
                 continue;
             }
 
             if (files.Count > 2)
             {
+                _logger.LogWarning($"Market folder {folderName} skipped. Too many spreadsheets found.");
                 AnsiConsole.MarkupLine($"Market folder [green]{folderName}[/] skipped. Too many spreadsheets found.");
                 continue;
             }
@@ -172,6 +174,7 @@ public class ConsoleUtility
 
             if (salesRunSheetFilename == null)
             {
+                _logger.LogWarning($"Market folder {folderName} skipped. Salesrun sheet is missing.");
                 AnsiConsole.MarkupLine($"Market folder [green]{folderName}[/] skipped. Salesrun sheet is missing.");
                 continue;
             }
@@ -187,6 +190,7 @@ public class ConsoleUtility
                 Path.Combine(fullFolderPath, marketClientSheetFilename), 
                 Path.Combine(fullFolderPath, salesRunSheetFilename));
 
+            _logger.LogInformation($"Folder {folderName} analyzed successfully.");
             AnsiConsole.MarkupLine($"Folder [green]{folderName}[/] analyzed successfully.");
         }
     }

@@ -18,7 +18,7 @@ namespace PageChecker.Library
 
         public void AnalyzeAndExportResults(string folderPath, string marketClientSheetFilename, string salesSheetFilename)
         {
-            _logger.LogInformation("Analyzing folders and exporting results...");
+            _logger.LogDebug($"Analyzing folders in {folderPath} and exporting results...");
 
             MarketClientSheet = new FileInfo(Path.Combine(folderPath, marketClientSheetFilename));
             SalesRunSheet = new FileInfo(Path.Combine(folderPath, salesSheetFilename));

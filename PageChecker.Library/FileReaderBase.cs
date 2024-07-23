@@ -63,7 +63,6 @@ namespace PageChecker.Library
         /// <returns></returns>
         public List<string> GetWorkspaceFolders()
         {
-            _logger.LogInformation("Getting workspace folders...");
             var folders = WorkspaceDirectory.GetDirectories().Select(x => x.Name).ToList();
             return folders;
         }
@@ -74,10 +73,10 @@ namespace PageChecker.Library
         /// <param name="resultsSheetFilePath">Path of results excel file.</param>
         public void RemoveExistingResultsExcel(string resultsSheetFilePath)
         {
-            _logger.LogInformation("Checking for already existing results sheet");
+            _logger.LogDebug($"Checking for existing results sheet : {resultsSheetFilePath}");
             if (File.Exists(resultsSheetFilePath))
             {
-                _logger.LogInformation("Existing results sheet found. Deleteing...");
+                _logger.LogDebug("Existing results sheet found. Deleteing...");
                 File.Delete(resultsSheetFilePath);
             }
         }
@@ -92,7 +91,7 @@ namespace PageChecker.Library
         {
             try
             {
-                _logger.LogInformation("Comparing sales and market sheet data...");
+                _logger.LogDebug("Comparing sales and market sheet data...");
                 foreach (var salesRow in salesRunSheetData)
                 {
                     var salesRunClientName = Regex.Replace(salesRow.Company.ToLower(), @"\([a-zA-Z0-9 .-]+\)", "").Replace(" ", "").Trim();
@@ -177,6 +176,8 @@ namespace PageChecker.Library
                 ws.Columns().AdjustToContents();
 
                 workbook.SaveAs(resultsExportPath);
+
+                _logger.LogDebug($"Exported results to {resultsExportPath}");
             }
             catch(Exception ex)
             {
